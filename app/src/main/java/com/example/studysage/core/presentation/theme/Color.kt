@@ -1,4 +1,4 @@
-package com.example.studysage.ui.theme
+package com.example.studysage.core.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -1,4 +1,4 @@
-package com.example.studysage.ui.theme
+package com.example.studysage.core.presentation.theme
 
 import android.app.Activity
 import android.os.Build
