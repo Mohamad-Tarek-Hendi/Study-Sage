@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -33,9 +35,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.studysage.R
+import com.example.studysage.feature_study_sage_app.domain.model.StudySession
 import com.example.studysage.feature_study_sage_app.domain.model.Subject
+import com.example.studysage.feature_study_sage_app.domain.model.Task
 import com.example.studysage.feature_study_sage_app.presentation.common.component.PerformanceCard
 import com.example.studysage.feature_study_sage_app.presentation.common.component.TopAppBar
+import com.example.studysage.feature_study_sage_app.presentation.common.component.studySessionList
+import com.example.studysage.feature_study_sage_app.presentation.common.component.taskList
 import com.example.studysage.feature_study_sage_app.presentation.common.data.PerformanceCardItem
 import com.example.studysage.feature_study_sage_app.presentation.dashboard.component.SubjectCard
 
@@ -43,14 +49,82 @@ import com.example.studysage.feature_study_sage_app.presentation.dashboard.compo
 fun DashBoardScreen() {
 
     //Fake Data
-    val subjects =
+    val subjectList =
         listOf(
-            Subject(name = "English", goalHours = 10f, color = Subject.subjectCardColors[0]),
-            Subject(name = "Math", goalHours = 10f, color = Subject.subjectCardColors[1]),
-            Subject(name = "Arabic", goalHours = 10f, color = Subject.subjectCardColors[2]),
-            Subject(name = "Science", goalHours = 10f, color = Subject.subjectCardColors[3]),
-            Subject(name = "History", goalHours = 10f, color = Subject.subjectCardColors[4])
+            Subject(
+                id = 0,
+                name = "English",
+                goalHours = 10f,
+                color = Subject.subjectCardColors[0]
+            ),
+            Subject(
+                id = 0,
+                name = "Math",
+                goalHours = 10f,
+                color = Subject.subjectCardColors[1]
+            ),
+            Subject(
+                id = 0,
+                name = "Arabic",
+                goalHours = 10f,
+                color = Subject.subjectCardColors[2]
+            ),
+            Subject(
+                id = 0,
+                name = "Science",
+                goalHours = 10f,
+                color = Subject.subjectCardColors[3]
+            ),
+            Subject(
+                id = 0,
+                name = "History",
+                goalHours = 10f,
+                color = Subject.subjectCardColors[4]
+            )
         )
+
+    val taskList =
+        listOf(
+            Task(
+                id = 1,
+                taskSubjectId = 0,
+                title = "Prepare first 5 pages",
+                description = "",
+                date = 0L,
+                priority = 0,
+                relatedTaskToSubject = "",
+                isTaskComplete = false
+            ),
+            Task(
+                id = 1,
+                taskSubjectId = 0,
+                title = "Prepare second 5 pages",
+                description = "",
+                date = 0L,
+                priority = 1,
+                relatedTaskToSubject = "",
+                isTaskComplete = true
+            )
+        )
+
+    val studySessionList =
+        listOf(
+            StudySession(
+                id = 0,
+                studySessionToSubject = 0,
+                relatedStudySessionToSubject = "English",
+                date = 2,
+                duration = 0L
+            ),
+            StudySession(
+                id = 0,
+                studySessionToSubject = 0,
+                relatedStudySessionToSubject = "Math",
+                date = 2,
+                duration = 0L
+            )
+        )
+
     Scaffold(
         topBar =
         {
@@ -105,7 +179,7 @@ fun DashBoardScreen() {
 
                 SubjectCardSection(
                     modifier = Modifier.fillMaxWidth(),
-                    subjectList = subjects,
+                    subjectList = subjectList,
                     emptyText = stringResource(id = R.string.hint_to_add_subject)
                 )
 
@@ -120,6 +194,22 @@ fun DashBoardScreen() {
                     Text(text = stringResource(id = R.string.start_study_session))
                 }
             }
+            taskList(
+                sectionTitle = "UpComing Task ",
+                tasks = taskList,
+                emptyText = "You don't have any task.\n Click the + button to add new task",
+                onTaskCardClick = {},
+                onCheckBoxClick = {/*TODO*/ }
+            )
+            item {
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+            studySessionList(
+                sectionTitle = "Recent Session Study",
+                sessions = studySessionList,
+                emptyText = "You don't have any study session.\n start a study session to begin recording your progress",
+                onDeleteIconClick = {/*TODO*/ }
+            )
 
         }
 

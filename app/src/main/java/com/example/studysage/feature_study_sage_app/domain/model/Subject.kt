@@ -8,6 +8,7 @@ import com.example.studysage.core.presentation.theme.gradient4
 import com.example.studysage.core.presentation.theme.gradient5
 
 data class Subject(
+    val id: Int,
     val name: String,
     val goalHours: Float,
     val color: List<Color>
