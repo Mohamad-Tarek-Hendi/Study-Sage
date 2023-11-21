@@ -24,6 +24,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,6 +48,7 @@ import com.example.studysage.feature_study_sage_app.presentation.common.componen
 import com.example.studysage.feature_study_sage_app.presentation.common.component.studySessionList
 import com.example.studysage.feature_study_sage_app.presentation.common.component.taskList
 import com.example.studysage.feature_study_sage_app.presentation.common.data.PerformanceCardItem
+import com.example.studysage.feature_study_sage_app.presentation.dashboard.component.AddSubjectDialog
 import com.example.studysage.feature_study_sage_app.presentation.dashboard.component.SubjectCard
 
 @Composable
@@ -125,6 +131,34 @@ fun DashBoardScreen() {
             )
         )
 
+    var isAddSubjectDialogOpen by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    var selectedColor by remember {
+        mutableStateOf(Subject.subjectCardColors.random())
+    }
+
+    var subjectName by remember {
+        mutableStateOf("")
+    }
+
+    var goalHour by remember {
+        mutableStateOf("")
+    }
+
+    AddSubjectDialog(
+        isOpen = isAddSubjectDialogOpen,
+        selectedColor = selectedColor,
+        subjectName = subjectName,
+        goalHour = goalHour,
+        onColorChange = { selectedColor = it },
+        onSubjectNameValueChange = { subjectName = it },
+        onGoalHourValueChange = { goalHour = it },
+        onDismissRequest = { isAddSubjectDialogOpen = false },
+        onConfirmationClick = { isAddSubjectDialogOpen = false }
+    )
+
     Scaffold(
         topBar =
         {
@@ -169,7 +203,9 @@ fun DashBoardScreen() {
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(start = 12.dp)
                     )
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = {
+                        isAddSubjectDialogOpen = true
+                    }) {
                         Icon(
                             imageVector = Icons.Filled.Add,
                             contentDescription = "Add Subject"
@@ -281,6 +317,7 @@ fun SubjectCardSection(
                 subjectName = subject.name,
                 gradient = subject.color,
                 onClick = {
+
                 }
             )
         }
