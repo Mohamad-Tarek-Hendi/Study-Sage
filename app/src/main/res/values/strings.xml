@@ -9,6 +9,7 @@
     <string name="subject_hint_title">Add Subject</string>
     <string name="subject_name">Subject Name</string>
     <string name="goal_study_hour">"Goal Study Hour"</string>
+    <string name="study_hour">Study Hour</string>
     <string name="delete_dialog_title">Delete</string>
     <string name="delete_subject_message">Are you sure to delete this session?\nYour studied hour will be reduced \n
     by this session time. this action cannot be undo</string>
