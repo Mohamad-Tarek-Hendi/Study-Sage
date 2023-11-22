@@ -3,6 +3,7 @@ package com.example.studysage.feature_study_sage_app.presentation.dashboard.comp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -43,6 +48,25 @@ fun AddSubjectDialog(
     onDismissRequest: () -> Unit,
     onConfirmationClick: () -> Unit
 ) {
+    //Check Error
+    var subjectNameError by rememberSaveable { mutableStateOf<String?>(null) }
+    var goalHourError by rememberSaveable { mutableStateOf<String?>(null) }
+
+    subjectNameError = when {
+        subjectName.isBlank() -> "Please enter subject name."
+        subjectName.length < 2 -> "Subject Name is too short."
+        subjectName.length > 20 -> "Subject Name is too long."
+        else -> null
+    }
+
+    goalHourError = when {
+        goalHour.isBlank() -> "Please enter goal hour name."
+        goalHour.toFloatOrNull() == null -> "Invalid number."
+        goalHour.toFloat() < 1f -> "please set at least 1 hour."
+        goalHour.toFloat() > 1000f -> "please set a maximum of 1000 hours."
+        else -> null
+    }
+
     if (isOpen) {
         AlertDialog(
             icon = {
@@ -56,7 +80,8 @@ fun AddSubjectDialog(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 10.dp)
+                            .padding(bottom = 10.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Subject.subjectCardColors.forEach { color ->
                             Box(
@@ -85,17 +110,21 @@ fun AddSubjectDialog(
                         label = {
                             Text(text = stringResource(id = R.string.subject_name))
                         },
-                        singleLine = true
+                        singleLine = true,
+                        isError = subjectNameError != null && subjectName.isNotBlank(),
+                        supportingText = { Text(text = subjectNameError.orEmpty()) }
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     OutlinedTextField(
                         value = goalHour,
                         onValueChange = onGoalHourValueChange,
                         label = {
-                            Text(text = stringResource(id = R.string.subject_name))
+                            Text(text = stringResource(id = R.string.goal_study_hour))
                         },
                         singleLine = true,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        isError = goalHourError != null && goalHour.isNotBlank(),
+                        supportingText = { Text(text = goalHourError.orEmpty()) }
                     )
                 }
             },
@@ -115,7 +144,8 @@ fun AddSubjectDialog(
                 TextButton(
                     onClick = {
                         onConfirmationClick()
-                    }
+                    },
+                    enabled = subjectNameError == null && goalHourError == null
                 ) {
                     Text("Confirm")
                 }

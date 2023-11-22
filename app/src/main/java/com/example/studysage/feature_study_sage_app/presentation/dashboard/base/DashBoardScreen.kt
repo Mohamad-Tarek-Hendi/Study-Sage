@@ -43,6 +43,7 @@ import com.example.studysage.R
 import com.example.studysage.feature_study_sage_app.domain.model.StudySession
 import com.example.studysage.feature_study_sage_app.domain.model.Subject
 import com.example.studysage.feature_study_sage_app.domain.model.Task
+import com.example.studysage.feature_study_sage_app.presentation.common.component.DeleteDialog
 import com.example.studysage.feature_study_sage_app.presentation.common.component.PerformanceCard
 import com.example.studysage.feature_study_sage_app.presentation.common.component.TopAppBar
 import com.example.studysage.feature_study_sage_app.presentation.common.component.studySessionList
@@ -131,21 +132,14 @@ fun DashBoardScreen() {
             )
         )
 
-    var isAddSubjectDialogOpen by rememberSaveable {
-        mutableStateOf(false)
-    }
+    var isAddSubjectDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var isDeleteSessionDialogOpen by rememberSaveable { mutableStateOf(false) }
 
-    var selectedColor by remember {
-        mutableStateOf(Subject.subjectCardColors.random())
-    }
+    var selectedColor by remember { mutableStateOf(Subject.subjectCardColors.random()) }
 
-    var subjectName by remember {
-        mutableStateOf("")
-    }
+    var subjectName by remember { mutableStateOf("") }
 
-    var goalHour by remember {
-        mutableStateOf("")
-    }
+    var goalHour by remember { mutableStateOf("") }
 
     AddSubjectDialog(
         isOpen = isAddSubjectDialogOpen,
@@ -157,6 +151,13 @@ fun DashBoardScreen() {
         onGoalHourValueChange = { goalHour = it },
         onDismissRequest = { isAddSubjectDialogOpen = false },
         onConfirmationClick = { isAddSubjectDialogOpen = false }
+    )
+
+    DeleteDialog(
+        isOpen = isDeleteSessionDialogOpen,
+        deleteMessage = stringResource(id = R.string.delete_subject_message),
+        onConfirmationClick = { isDeleteSessionDialogOpen = false },
+        onDismissRequest = { isDeleteSessionDialogOpen = false }
     )
 
     Scaffold(
@@ -244,7 +245,9 @@ fun DashBoardScreen() {
                 sectionTitle = "Recent Session Study",
                 sessions = studySessionList,
                 emptyText = "You don't have any study session.\n start a study session to begin recording your progress",
-                onDeleteIconClick = {/*TODO*/ }
+                onDeleteIconClick = {
+                    isDeleteSessionDialogOpen = true
+                }
             )
 
         }
