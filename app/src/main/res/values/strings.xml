@@ -11,7 +11,8 @@
     <string name="goal_study_hour">"Goal Study Hour"</string>
     <string name="study_hour">Study Hour</string>
     <string name="delete_dialog_title">Delete</string>
-    <string name="delete_subject_message">Are you sure to delete this session?\nYour studied hour will be reduced \n
+    <string name="delete_subject_message">Are you sure to delete this subject?\nYour studied hour will be reduced \n
     by this session time. this action cannot be undo</string>
+    <string name="delete_session_message">Are you sure to delete this subject?\nall related tasks and study session will be permanently removed.\nthis action cannot be undo</string>
     <string name="subject_screen_large_top_appbar">Subject</string>
 </resources>

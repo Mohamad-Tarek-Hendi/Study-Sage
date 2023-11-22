@@ -1,41 +1,196 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.studysage.feature_study_sage_app.presentation.subject_screen.base
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.studysage.R
+import com.example.studysage.feature_study_sage_app.domain.model.StudySession
+import com.example.studysage.feature_study_sage_app.domain.model.Subject
+import com.example.studysage.feature_study_sage_app.domain.model.Task
+import com.example.studysage.feature_study_sage_app.presentation.common.component.DeleteDialog
 import com.example.studysage.feature_study_sage_app.presentation.common.component.LargeTopAppBar
 import com.example.studysage.feature_study_sage_app.presentation.common.component.PerformanceCard
+import com.example.studysage.feature_study_sage_app.presentation.common.component.studySessionList
+import com.example.studysage.feature_study_sage_app.presentation.common.component.taskList
 import com.example.studysage.feature_study_sage_app.presentation.common.data.PerformanceCardItem
+import com.example.studysage.feature_study_sage_app.presentation.dashboard.component.AddSubjectDialog
 import com.example.studysage.feature_study_sage_app.presentation.subject_screen.component.CircularProgress
 
 @Composable
 fun SubjectScreen(
 
 ) {
+    //Fake Data
+    val taskList =
+        listOf(
+            Task(
+                id = 1,
+                taskSubjectId = 0,
+                title = "Prepare first 5 pages",
+                description = "",
+                date = 0L,
+                priority = 0,
+                relatedTaskToSubject = "",
+                isTaskComplete = false
+            ),
+            Task(
+                id = 1,
+                taskSubjectId = 0,
+                title = "Prepare second 5 pages",
+                description = "",
+                date = 0L,
+                priority = 1,
+                relatedTaskToSubject = "",
+                isTaskComplete = true
+            ),
+            Task(
+                id = 1,
+                taskSubjectId = 0,
+                title = "Prepare second 5 pages",
+                description = "",
+                date = 0L,
+                priority = 1,
+                relatedTaskToSubject = "",
+                isTaskComplete = true
+            ),
+            Task(
+                id = 1,
+                taskSubjectId = 0,
+                title = "Prepare second 5 pages",
+                description = "",
+                date = 0L,
+                priority = 1,
+                relatedTaskToSubject = "",
+                isTaskComplete = true
+            ),
+            Task(
+                id = 1,
+                taskSubjectId = 0,
+                title = "Prepare second 5 pages",
+                description = "",
+                date = 0L,
+                priority = 1,
+                relatedTaskToSubject = "",
+                isTaskComplete = true
+            )
+        )
+
+    val studySessionList =
+        listOf(
+            StudySession(
+                id = 0,
+                studySessionToSubject = 0,
+                relatedStudySessionToSubject = "English",
+                date = 2,
+                duration = 0L
+            ),
+            StudySession(
+                id = 0,
+                studySessionToSubject = 0,
+                relatedStudySessionToSubject = "Math",
+                date = 2,
+                duration = 0L
+            )
+        )
+
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+
+    val lazyColumnState = rememberLazyListState()
+
+    val isFloatingActionButtonExpanded by remember {
+        derivedStateOf { lazyColumnState.firstVisibleItemIndex == 0 }
+    }
+
+    var isEditSubjectDialogOpen by rememberSaveable { mutableStateOf(false) }
+
+    var isDeleteSessionDialogOpen by rememberSaveable { mutableStateOf(false) }
+
+    var isDeleteSubjectDialogOpen by rememberSaveable { mutableStateOf(false) }
+
+    var selectedColor by remember { mutableStateOf(Subject.subjectCardColors.random()) }
+
+    var subjectName by remember { mutableStateOf("") }
+
+    var goalHour by remember { mutableStateOf("") }
+
+    AddSubjectDialog(
+        isOpen = isEditSubjectDialogOpen,
+        selectedColor = selectedColor,
+        subjectName = subjectName,
+        goalHour = goalHour,
+        onColorChange = { selectedColor = it },
+        onSubjectNameValueChange = { subjectName = it },
+        onGoalHourValueChange = { goalHour = it },
+        onDismissRequest = { isEditSubjectDialogOpen = false },
+        onConfirmationClick = { isEditSubjectDialogOpen = false }
+    )
+
+    DeleteDialog(
+        isOpen = isDeleteSubjectDialogOpen,
+        deleteMessage = stringResource(id = R.string.delete_subject_message),
+        onConfirmationClick = { isDeleteSubjectDialogOpen = false },
+        onDismissRequest = { isDeleteSubjectDialogOpen = false }
+    )
+
+    DeleteDialog(
+        isOpen = isDeleteSessionDialogOpen,
+        deleteMessage = stringResource(id = R.string.delete_session_message),
+        onConfirmationClick = { isDeleteSessionDialogOpen = false },
+        onDismissRequest = { isDeleteSessionDialogOpen = false }
+    )
+
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
+                scrollBehavior = scrollBehavior,
                 title = stringResource(id = R.string.subject_screen_large_top_appbar),
                 onBackButtonClick = { /*TODO*/ },
-                onDeleteButtonClick = { /*TODO*/ },
-                onEditButtonClick = {/*TODO*/ })
+                onDeleteButtonClick = { isDeleteSubjectDialogOpen = true },
+                onEditButtonClick = { isEditSubjectDialogOpen = true })
+        },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = {/*TODO*/ },
+                icon = { Icon(imageVector = Icons.Default.Add, contentDescription = "Add Task") },
+                text = { Text(text = "Add Task") },
+                expanded = isFloatingActionButtonExpanded
+            )
         }
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(paddingValues),
+            state = lazyColumnState
         ) {
 
             item {
@@ -56,7 +211,32 @@ fun SubjectScreen(
                     progress = 0.75f
                 )
             }
-
+            taskList(
+                sectionTitle = "UpComing Task ",
+                tasks = taskList,
+                emptyText = "You don't have any task.\n Click the + button to add new task",
+                onTaskCardClick = {/*TODO*/ },
+                onCheckBoxClick = {/*TODO*/ }
+            )
+            item {
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+            taskList(
+                sectionTitle = "Complete Task ",
+                tasks = taskList,
+                emptyText = "You don't have any Complete task.\n Click the check box to complete task.",
+                onTaskCardClick = {/*TODO*/ },
+                onCheckBoxClick = {/*TODO*/ }
+            )
+            item {
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+            studySessionList(
+                sectionTitle = "Recent Session Study",
+                sessions = studySessionList,
+                emptyText = "You don't have any study session.\n start a study session to begin recording your progress",
+                onDeleteIconClick = { isDeleteSessionDialogOpen = true }
+            )
         }
     }
 }
@@ -78,10 +258,13 @@ fun PerformanceCardWithProgressSection(
     ) {
         items(performanceCardsItems.size) { index ->
             PerformanceCard(
+                modifier = Modifier
+                    .fillMaxWidth(),
                 headText = performanceCardsItems[index].name,
                 countText = performanceCardsItems[index].count,
             )
         }
+
         item {
             CircularProgress(
                 modifier = Modifier.size(75.dp),
