@@ -12,4 +12,5 @@
     <string name="delete_dialog_title">Delete</string>
     <string name="delete_subject_message">Are you sure to delete this session?\nYour studied hour will be reduced \n
     by this session time. this action cannot be undo</string>
+    <string name="subject_screen_large_top_appbar">Subject</string>
 </resources>
