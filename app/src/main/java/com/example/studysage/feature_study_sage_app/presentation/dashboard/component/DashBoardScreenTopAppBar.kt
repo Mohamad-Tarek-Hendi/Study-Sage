@@ -1,4 +1,4 @@
-package com.example.studysage.feature_study_sage_app.presentation.common.component
+package com.example.studysage.feature_study_sage_app.presentation.dashboard.component
 
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -10,7 +10,7 @@ import com.example.studysage.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBar() {
+fun DashBoardScreenTopAppBar() {
     CenterAlignedTopAppBar(
         title = {
             Text(
