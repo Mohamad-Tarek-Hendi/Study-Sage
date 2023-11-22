@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.example.studysage.feature_study_sage_app.presentation.common.component
+package com.example.studysage.feature_study_sage_app.presentation.subject.component
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -12,17 +12,20 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.style.TextOverflow
 
 @Composable
 fun LargeTopAppBar(
     title: String,
+    scrollBehavior: TopAppBarScrollBehavior,
     onBackButtonClick: () -> Unit,
     onDeleteButtonClick: () -> Unit,
     onEditButtonClick: () -> Unit
 ) {
     LargeTopAppBar(
+        scrollBehavior = scrollBehavior,
         navigationIcon = {
             IconButton(onClick = { onBackButtonClick() }) {
                 Icon(

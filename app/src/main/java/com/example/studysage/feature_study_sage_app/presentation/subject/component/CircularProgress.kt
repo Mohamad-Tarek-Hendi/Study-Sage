@@ -1,4 +1,4 @@
-package com.example.studysage.feature_study_sage_app.presentation.subject_screen.component
+package com.example.studysage.feature_study_sage_app.presentation.subject.component
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

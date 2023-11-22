@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.example.studysage.feature_study_sage_app.presentation.subject_screen.base
+package com.example.studysage.feature_study_sage_app.presentation.subject.base
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
@@ -35,14 +35,14 @@ import com.example.studysage.R
 import com.example.studysage.feature_study_sage_app.domain.model.StudySession
 import com.example.studysage.feature_study_sage_app.domain.model.Subject
 import com.example.studysage.feature_study_sage_app.domain.model.Task
+import com.example.studysage.feature_study_sage_app.presentation.common.component.AddSubjectDialog
 import com.example.studysage.feature_study_sage_app.presentation.common.component.DeleteDialog
-import com.example.studysage.feature_study_sage_app.presentation.common.component.LargeTopAppBar
 import com.example.studysage.feature_study_sage_app.presentation.common.component.PerformanceCard
 import com.example.studysage.feature_study_sage_app.presentation.common.component.studySessionList
 import com.example.studysage.feature_study_sage_app.presentation.common.component.taskList
 import com.example.studysage.feature_study_sage_app.presentation.common.data.PerformanceCardItem
-import com.example.studysage.feature_study_sage_app.presentation.dashboard.component.AddSubjectDialog
-import com.example.studysage.feature_study_sage_app.presentation.subject_screen.component.CircularProgress
+import com.example.studysage.feature_study_sage_app.presentation.subject.component.CircularProgress
+import com.example.studysage.feature_study_sage_app.presentation.subject.component.LargeTopAppBar
 
 @Composable
 fun SubjectScreen(

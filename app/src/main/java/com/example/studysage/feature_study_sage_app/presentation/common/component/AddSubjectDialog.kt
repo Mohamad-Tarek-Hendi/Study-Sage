@@ -1,4 +1,4 @@
-package com.example.studysage.feature_study_sage_app.presentation.dashboard.component
+package com.example.studysage.feature_study_sage_app.presentation.common.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
