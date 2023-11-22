@@ -194,32 +194,14 @@ fun DashBoardScreen() {
                 )
             }
             item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = stringResource(R.string.subject),
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(start = 12.dp)
-                    )
-                    IconButton(onClick = {
-                        isAddSubjectDialogOpen = true
-                    }) {
-                        Icon(
-                            imageVector = Icons.Filled.Add,
-                            contentDescription = "Add Subject"
-                        )
-                    }
-                }
-
                 SubjectCardSection(
                     modifier = Modifier.fillMaxWidth(),
                     subjectList = subjectList,
-                    emptyText = stringResource(id = R.string.hint_to_add_subject)
+                    emptyText = stringResource(id = R.string.hint_to_add_subject),
+                    onClickAddSubjectButton = {
+                        isAddSubjectDialogOpen = true
+                    }
                 )
-
             }
             item {
                 FilledTonalButton(
@@ -279,9 +261,26 @@ fun PerformanceCardSection(
 fun SubjectCardSection(
     modifier: Modifier,
     subjectList: List<Subject>,
-    emptyText: String
+    emptyText: String,
+    onClickAddSubjectButton: () -> Unit
 ) {
-
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = stringResource(R.string.subject),
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.padding(start = 12.dp)
+        )
+        IconButton(onClick = onClickAddSubjectButton) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = "Add Subject"
+            )
+        }
+    }
     if (subjectList.isEmpty()) {
         Column(modifier = modifier) {
             Image(
