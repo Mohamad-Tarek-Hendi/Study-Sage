@@ -46,11 +46,23 @@ import com.example.studysage.feature_study_sage_app.presentation.common.mapping.
 import com.example.studysage.feature_study_sage_app.presentation.common.util.Priority
 import com.example.studysage.feature_study_sage_app.presentation.task.component.TaskPriority
 import com.example.studysage.feature_study_sage_app.presentation.task.component.TaskTopAppBar
+import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.launch
 import java.time.Instant
 
+data class TaskScreenNavArgs(
+    val subjectId: Int?,
+    val taskId: Int?
+)
+
+@Destination(navArgsDelegate = TaskScreenNavArgs::class)
 @Composable
-fun TaskScreen() {
+fun TaskScreenRoute() {
+    TaskScreen()
+}
+
+@Composable
+private fun TaskScreen() {
 
     val scope = rememberCoroutineScope()
 
@@ -228,7 +240,6 @@ fun TaskScreen() {
         }
     }
 }
-
 
 @Composable
 fun PrioritySection(

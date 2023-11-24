@@ -35,11 +35,18 @@ import com.example.studysage.feature_study_sage_app.presentation.common.componen
 import com.example.studysage.feature_study_sage_app.presentation.common.component.studySessionList
 import com.example.studysage.feature_study_sage_app.presentation.session.component.SessionTopAppBar
 import com.example.studysage.feature_study_sage_app.presentation.session.component.TimerSession
+import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.launch
+
+@Destination
+@Composable
+fun SessionScreenRoute() {
+    SessionScreen()
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SessionScreen(
+private fun SessionScreen(
 ) {
     val studySessionList =
         listOf(

@@ -51,10 +51,44 @@ import com.example.studysage.feature_study_sage_app.presentation.common.componen
 import com.example.studysage.feature_study_sage_app.presentation.common.data.PerformanceCardItem
 import com.example.studysage.feature_study_sage_app.presentation.dashboard.component.DashBoardScreenTopAppBar
 import com.example.studysage.feature_study_sage_app.presentation.dashboard.component.SubjectCard
+import com.example.studysage.feature_study_sage_app.presentation.destinations.SessionScreenRouteDestination
+import com.example.studysage.feature_study_sage_app.presentation.destinations.SubjectScreenRouteDestination
+import com.example.studysage.feature_study_sage_app.presentation.destinations.TaskScreenRouteDestination
+import com.example.studysage.feature_study_sage_app.presentation.subject.base.SubjectScreenNavArgs
+import com.example.studysage.feature_study_sage_app.presentation.task.base.TaskScreenNavArgs
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+
+@Destination(start = true)
+@Composable
+fun DashboardScreenRoute(
+    navigator: DestinationsNavigator
+) {
+    DashBoardScreen(
+        onSubjectCardClick = { subjectId ->
+            subjectId?.let {
+                val navArg = SubjectScreenNavArgs(subjectId = subjectId)
+                navigator.navigate(SubjectScreenRouteDestination(navArgs = navArg))
+            }
+        },
+        onTaskCardClick = { taskId ->
+            taskId?.let {
+                val navArg = TaskScreenNavArgs(taskId = taskId, subjectId = null)
+                navigator.navigate(TaskScreenRouteDestination(navArgs = navArg))
+            }
+        },
+        onStartStudySessionButtonClick = {
+            navigator.navigate(SessionScreenRouteDestination())
+        }
+    )
+}
 
 @Composable
-fun DashBoardScreen() {
-
+private fun DashBoardScreen(
+    onSubjectCardClick: (Int?) -> Unit,
+    onTaskCardClick: (Int?) -> Unit,
+    onStartStudySessionButtonClick: () -> Unit
+) {
     //Fake Data
     val subjectList =
         listOf(
@@ -133,6 +167,7 @@ fun DashBoardScreen() {
         )
 
     var isAddSubjectDialogOpen by rememberSaveable { mutableStateOf(false) }
+
     var isDeleteSessionDialogOpen by rememberSaveable { mutableStateOf(false) }
 
     var selectedColor by remember { mutableStateOf(Subject.subjectCardColors.random()) }
@@ -200,12 +235,13 @@ fun DashBoardScreen() {
                     emptyText = stringResource(id = R.string.hint_to_add_subject),
                     onClickAddSubjectButton = {
                         isAddSubjectDialogOpen = true
-                    }
+                    },
+                    onSubjectCardClick = onSubjectCardClick
                 )
             }
             item {
                 FilledTonalButton(
-                    onClick = { /*TODO*/ },
+                    onClick = { onStartStudySessionButtonClick },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 48.dp, vertical = 20.dp)
@@ -217,7 +253,7 @@ fun DashBoardScreen() {
                 sectionTitle = "UpComing Task ",
                 tasks = taskList,
                 emptyText = "You don't have any task.\n Click the + button to add new task",
-                onTaskCardClick = {},
+                onTaskCardClick = { onTaskCardClick },
                 onCheckBoxClick = {/*TODO*/ }
             )
             item {
@@ -261,7 +297,8 @@ fun SubjectCardSection(
     modifier: Modifier,
     subjectList: List<Subject>,
     emptyText: String,
-    onClickAddSubjectButton: () -> Unit
+    onClickAddSubjectButton: () -> Unit,
+    onSubjectCardClick: (Int) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -318,7 +355,7 @@ fun SubjectCardSection(
                 subjectName = subject.name,
                 gradient = subject.color,
                 onClick = {
-
+                    onSubjectCardClick(subject.id)
                 }
             )
         }

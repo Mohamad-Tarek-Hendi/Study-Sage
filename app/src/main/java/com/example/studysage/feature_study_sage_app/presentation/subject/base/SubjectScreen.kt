@@ -43,11 +43,20 @@ import com.example.studysage.feature_study_sage_app.presentation.common.componen
 import com.example.studysage.feature_study_sage_app.presentation.common.data.PerformanceCardItem
 import com.example.studysage.feature_study_sage_app.presentation.subject.component.CircularProgress
 import com.example.studysage.feature_study_sage_app.presentation.subject.component.LargeTopAppBar
+import com.ramcosta.composedestinations.annotation.Destination
+
+data class SubjectScreenNavArgs(
+    val subjectId: Int
+)
+
+@Destination(navArgsDelegate = SubjectScreenNavArgs::class)
+@Composable
+fun SubjectScreenRoute() {
+    SubjectScreen()
+}
 
 @Composable
-fun SubjectScreen(
-
-) {
+private fun SubjectScreen() {
     //Fake Data
     val taskList =
         listOf(
@@ -240,7 +249,6 @@ fun SubjectScreen(
         }
     }
 }
-
 
 @Composable
 fun PerformanceCardWithProgressSection(

@@ -26,7 +26,7 @@ fun SubjectCard(
     modifier: Modifier = Modifier,
     subjectName: String,
     gradient: List<Color>,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Box(
         modifier = modifier
