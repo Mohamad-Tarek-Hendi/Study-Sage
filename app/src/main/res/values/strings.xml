@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Study Sage</string>
     <string name="top_app_bar_name">Study Sage</string>
+    <string name="save_task">Save</string>
     <string name="subject">Subject</string>
     <string name="hint_to_add_subject">You don\'t have any subjects.\n Click the + button to add new subject</string>
     <string name="empty_tasks">You don\'t have any task.\n Click the + button to add new task</string>
@@ -8,11 +9,27 @@
     <string name="upcoming_task">UpComing Task </string>
     <string name="subject_hint_title">Add Subject</string>
     <string name="subject_name">Subject Name</string>
-    <string name="goal_study_hour">"Goal Study Hour"</string>
+    <string name="task_title">Task Title</string>
+    <string name="task_date">Task Date</string>
+    <string name="related_subject">Related Subject</string>
+    <string name="task_priority">Task Priority</string>
+    <string name="task_description">Task Description</string>
+    <string name="goal_study_hour">Goal Study Hour</string>
     <string name="study_hour">Study Hour</string>
     <string name="delete_dialog_title">Delete</string>
-    <string name="delete_subject_message">Are you sure to delete this subject?\nYour studied hour will be reduced \n
-    by this session time. this action cannot be undo</string>
+    <string name="delete_subject_message">Are you sure to delete this subject? Your studied hour will be reduced by this session time. this action cannot be undo</string>
+    <string name="delete_session_message_in_session_screen">Are you sure to delete this session? Your studied hour will be reduced by this session time. this action cannot be undo</string>
     <string name="delete_session_message">Are you sure to delete this subject?\nall related tasks and study session will be permanently removed.\nthis action cannot be undo</string>
     <string name="subject_screen_large_top_appbar">Subject</string>
+    <string name="task_title_is_blank_error">Please enter task title.</string>
+    <string name="task_title_is_too_short_error">Task title is too short.</string>
+    <string name="task_title_is_too_long_error">Task title is too long.</string>
+    <string name="task_description_is_blank_error">Please enter task title.</string>
+    <string name="task_description_is_too_short_error">Task title is too short.</string>
+    <string name="task_description_is_too_long_error">Task title is too long.</string>
+    <string name="delete_task">Are you sure\nyou want to delete this task?\nthis action cannot be undo</string>
+    <string name="confirm_date_dialog">Confirm</string>
+    <string name="delete_date_dialog">Dismiss</string>
+    <string name="no_subject_in_bottom_sheet">" Read to begin? First add a subject."</string>
+    <string name="session_top_appbar_title">Session</string>
 </resources>
