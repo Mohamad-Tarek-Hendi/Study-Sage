@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
 package com.example.studysage.feature_study_sage_app.presentation.subject.base
 
@@ -32,7 +32,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.studysage.R
-import com.example.studysage.feature_study_sage_app.domain.model.StudySession
+import com.example.studysage.feature_study_sage_app.domain.model.Session
 import com.example.studysage.feature_study_sage_app.domain.model.Subject
 import com.example.studysage.feature_study_sage_app.domain.model.Task
 import com.example.studysage.feature_study_sage_app.presentation.common.component.AddSubjectDialog
@@ -41,9 +41,12 @@ import com.example.studysage.feature_study_sage_app.presentation.common.componen
 import com.example.studysage.feature_study_sage_app.presentation.common.component.studySessionList
 import com.example.studysage.feature_study_sage_app.presentation.common.component.taskList
 import com.example.studysage.feature_study_sage_app.presentation.common.data.PerformanceCardItem
+import com.example.studysage.feature_study_sage_app.presentation.destinations.TaskScreenRouteDestination
 import com.example.studysage.feature_study_sage_app.presentation.subject.component.CircularProgress
 import com.example.studysage.feature_study_sage_app.presentation.subject.component.LargeTopAppBar
+import com.example.studysage.feature_study_sage_app.presentation.task.base.TaskScreenNavArgs
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 data class SubjectScreenNavArgs(
     val subjectId: Int
@@ -51,12 +54,31 @@ data class SubjectScreenNavArgs(
 
 @Destination(navArgsDelegate = SubjectScreenNavArgs::class)
 @Composable
-fun SubjectScreenRoute() {
-    SubjectScreen()
+fun SubjectScreenRoute(
+    navigator: DestinationsNavigator
+) {
+    SubjectScreen(
+        onBackButtonClick = {
+            navigator.navigateUp()
+        },
+        onAddTaskFloatingButtonClick = {
+            navigator.navigate(TaskScreenRouteDestination(taskId = null, subjectId = -1))
+        },
+        onTaskCardClick = { taskId ->
+            taskId?.let {
+                val navArg = TaskScreenNavArgs(taskId = taskId, subjectId = null)
+                navigator.navigate(TaskScreenRouteDestination(navArgs = navArg))
+            }
+        }
+    )
 }
 
 @Composable
-private fun SubjectScreen() {
+private fun SubjectScreen(
+    onBackButtonClick: () -> Unit,
+    onAddTaskFloatingButtonClick: () -> Unit,
+    onTaskCardClick: (Int?) -> Unit
+) {
     //Fake Data
     val taskList =
         listOf(
@@ -112,16 +134,16 @@ private fun SubjectScreen() {
             )
         )
 
-    val studySessionList =
+    val sessionLists =
         listOf(
-            StudySession(
+            Session(
                 id = 0,
                 studySessionToSubject = 0,
                 relatedStudySessionToSubject = "English",
                 date = 2,
                 duration = 0L
             ),
-            StudySession(
+            Session(
                 id = 0,
                 studySessionToSubject = 0,
                 relatedStudySessionToSubject = "Math",
@@ -182,13 +204,13 @@ private fun SubjectScreen() {
             LargeTopAppBar(
                 scrollBehavior = scrollBehavior,
                 title = stringResource(id = R.string.subject_screen_large_top_appbar),
-                onBackButtonClick = { /*TODO*/ },
+                onBackButtonClick = { onBackButtonClick() },
                 onDeleteButtonClick = { isDeleteSubjectDialogOpen = true },
                 onEditButtonClick = { isEditSubjectDialogOpen = true })
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = {/*TODO*/ },
+                onClick = { onAddTaskFloatingButtonClick() },
                 icon = { Icon(imageVector = Icons.Default.Add, contentDescription = "Add Task") },
                 text = { Text(text = "Add Task") },
                 expanded = isFloatingActionButtonExpanded
@@ -224,7 +246,7 @@ private fun SubjectScreen() {
                 sectionTitle = "UpComing Task ",
                 tasks = taskList,
                 emptyText = "You don't have any task.\n Click the + button to add new task",
-                onTaskCardClick = {/*TODO*/ },
+                onTaskCardClick = onTaskCardClick,
                 onCheckBoxClick = {/*TODO*/ }
             )
             item {
@@ -242,7 +264,7 @@ private fun SubjectScreen() {
             }
             studySessionList(
                 sectionTitle = "Recent Session Study",
-                sessions = studySessionList,
+                sessions = sessionLists,
                 emptyText = "You don't have any study session.\n start a study session to begin recording your progress",
                 onDeleteIconClick = { isDeleteSessionDialogOpen = true }
             )

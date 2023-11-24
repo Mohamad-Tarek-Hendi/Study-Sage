@@ -47,6 +47,7 @@ import com.example.studysage.feature_study_sage_app.presentation.common.util.Pri
 import com.example.studysage.feature_study_sage_app.presentation.task.component.TaskPriority
 import com.example.studysage.feature_study_sage_app.presentation.task.component.TaskTopAppBar
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
 import java.time.Instant
 
@@ -57,12 +58,20 @@ data class TaskScreenNavArgs(
 
 @Destination(navArgsDelegate = TaskScreenNavArgs::class)
 @Composable
-fun TaskScreenRoute() {
-    TaskScreen()
+fun TaskScreenRoute(
+    navigator: DestinationsNavigator
+) {
+    TaskScreen(
+        onBackButtonClick = {
+            navigator.navigateUp()
+        }
+    )
 }
 
 @Composable
-private fun TaskScreen() {
+private fun TaskScreen(
+    onBackButtonClick: () -> Unit
+) {
 
     val scope = rememberCoroutineScope()
 
@@ -137,7 +146,7 @@ private fun TaskScreen() {
             isTaskExist = true,
             isComplete = false,
             checkBoxBorderColor = Red,
-            onBackButtonClick = { /*TODO*/ },
+            onBackButtonClick = { onBackButtonClick() },
             onDeleteButtonClick = { isOpenDeleteDialog = true }) {}
     }) { paddingValues ->
         Column(

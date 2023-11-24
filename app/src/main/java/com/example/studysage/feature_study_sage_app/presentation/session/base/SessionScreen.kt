@@ -29,35 +29,43 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.studysage.R
-import com.example.studysage.feature_study_sage_app.domain.model.StudySession
+import com.example.studysage.feature_study_sage_app.domain.model.Session
 import com.example.studysage.feature_study_sage_app.presentation.common.component.DeleteDialog
 import com.example.studysage.feature_study_sage_app.presentation.common.component.SubjectDropBottomSheet
 import com.example.studysage.feature_study_sage_app.presentation.common.component.studySessionList
 import com.example.studysage.feature_study_sage_app.presentation.session.component.SessionTopAppBar
 import com.example.studysage.feature_study_sage_app.presentation.session.component.TimerSession
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
 
 @Destination
 @Composable
-fun SessionScreenRoute() {
-    SessionScreen()
+fun SessionScreenRoute(
+    navigator: DestinationsNavigator
+) {
+    SessionScreen(
+        onBackButtonClick = {
+            navigator.navigateUp()
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SessionScreen(
+    onBackButtonClick: () -> Unit
 ) {
-    val studySessionList =
+    val sessionLists =
         listOf(
-            StudySession(
+            Session(
                 id = 0,
                 studySessionToSubject = 0,
                 relatedStudySessionToSubject = "English",
                 date = 2,
                 duration = 0L
             ),
-            StudySession(
+            Session(
                 id = 0,
                 studySessionToSubject = 0,
                 relatedStudySessionToSubject = "Math",
@@ -101,9 +109,7 @@ private fun SessionScreen(
         topBar = {
             SessionTopAppBar(
                 title = stringResource(R.string.session_top_appbar_title),
-                onBackButtonClick = {
-
-                }
+                onBackButtonClick = { onBackButtonClick() }
             )
         }
     ) { paddingValues ->
@@ -141,7 +147,7 @@ private fun SessionScreen(
             }
             studySessionList(
                 sectionTitle = "Study Session History",
-                sessions = studySessionList,
+                sessions = sessionLists,
                 emptyText = "You don't have any study session.\n start a study session to begin recording your progress",
                 onDeleteIconClick = { isDeleteSessionDialogOpen = true }
             )

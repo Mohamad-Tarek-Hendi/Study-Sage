@@ -29,13 +29,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.studysage.R
-import com.example.studysage.feature_study_sage_app.domain.model.StudySession
+import com.example.studysage.feature_study_sage_app.domain.model.Session
 
 fun LazyListScope.studySessionList(
     sectionTitle: String,
-    sessions: List<StudySession>,
+    sessions: List<Session>,
     emptyText: String,
-    onDeleteIconClick: (StudySession) -> Unit
+    onDeleteIconClick: (Session) -> Unit
 ) {
     item {
         Text(
@@ -93,7 +93,7 @@ fun LazyListScope.studySessionList(
 @Composable
 fun StudySessionCard(
     modifier: Modifier = Modifier,
-    session: StudySession,
+    session: Session,
     onDeleteIconClick: () -> Unit
 ) {
     ElevatedCard(

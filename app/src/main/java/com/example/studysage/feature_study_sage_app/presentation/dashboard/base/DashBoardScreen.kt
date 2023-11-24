@@ -40,7 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.studysage.R
-import com.example.studysage.feature_study_sage_app.domain.model.StudySession
+import com.example.studysage.feature_study_sage_app.domain.model.Session
 import com.example.studysage.feature_study_sage_app.domain.model.Subject
 import com.example.studysage.feature_study_sage_app.domain.model.Task
 import com.example.studysage.feature_study_sage_app.presentation.common.component.AddSubjectDialog
@@ -148,16 +148,16 @@ private fun DashBoardScreen(
             )
         )
 
-    val studySessionList =
+    val sessionLists =
         listOf(
-            StudySession(
+            Session(
                 id = 0,
                 studySessionToSubject = 0,
                 relatedStudySessionToSubject = "English",
                 date = 2,
                 duration = 0L
             ),
-            StudySession(
+            Session(
                 id = 0,
                 studySessionToSubject = 0,
                 relatedStudySessionToSubject = "Math",
@@ -241,7 +241,7 @@ private fun DashBoardScreen(
             }
             item {
                 FilledTonalButton(
-                    onClick = { onStartStudySessionButtonClick },
+                    onClick = { onStartStudySessionButtonClick() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 48.dp, vertical = 20.dp)
@@ -253,7 +253,7 @@ private fun DashBoardScreen(
                 sectionTitle = "UpComing Task ",
                 tasks = taskList,
                 emptyText = "You don't have any task.\n Click the + button to add new task",
-                onTaskCardClick = { onTaskCardClick },
+                onTaskCardClick = onTaskCardClick,
                 onCheckBoxClick = {/*TODO*/ }
             )
             item {
@@ -261,7 +261,7 @@ private fun DashBoardScreen(
             }
             studySessionList(
                 sectionTitle = "Recent Session Study",
-                sessions = studySessionList,
+                sessions = sessionLists,
                 emptyText = "You don't have any study session.\n start a study session to begin recording your progress",
                 onDeleteIconClick = {
                     isDeleteSessionDialogOpen = true
