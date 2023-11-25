@@ -25,4 +25,8 @@ abstract class StudySageDatabase : RoomDatabase() {
     abstract fun subjectDao(): SubjectDao
     abstract fun taskDao(): TaskDao
     abstract fun sessionDao(): SessionDao
+
+    companion object {
+        const val DATABASE_NAME = "study_sage.db"
+    }
 }
