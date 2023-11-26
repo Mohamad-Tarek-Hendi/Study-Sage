@@ -48,38 +48,40 @@ fun LazyListScope.taskList(
         )
     }
 
-    if (tasks.isEmpty()) {
-        item {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Image(
+    if (tasks != null) {
+        if (tasks.isEmpty()) {
+            item {
+                Column(
                     modifier = Modifier
-                        .size(120.dp)
-                        .clip(CircleShape),
-                    painter = painterResource(id = R.drawable.task),
-                    contentDescription = emptyText,
-                    contentScale = ContentScale.Crop
-                )
-                Spacer(
-                    modifier = Modifier
-                        .height(12.dp)
-                )
-                Text(
-                    text = emptyText,
-                    style = MaterialTheme
-                        .typography.bodySmall
-                        .copy(
-                            fontWeight = FontWeight.Bold
-                        ),
-                    color = Color.Gray,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 7.dp)
-                )
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .size(120.dp)
+                            .clip(CircleShape),
+                        painter = painterResource(id = R.drawable.task),
+                        contentDescription = emptyText,
+                        contentScale = ContentScale.Crop
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .height(12.dp)
+                    )
+                    Text(
+                        text = emptyText,
+                        style = MaterialTheme
+                            .typography.bodySmall
+                            .copy(
+                                fontWeight = FontWeight.Bold
+                            ),
+                        color = Color.Gray,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 7.dp)
+                    )
+                }
             }
         }
     }
@@ -88,7 +90,7 @@ fun LazyListScope.taskList(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
             task = task,
             onClick = {
-                onTaskCardClick(task.id)
+                onTaskCardClick(task.id ?: 0)
             },
             onTaskCheckBoxClick = {
                 onCheckBoxClick(task)
@@ -116,8 +118,8 @@ fun TaskCard(
         ) {
 
             TaskCheckBox(
-                isTaskComplete = task.isTaskComplete,
-                borderColor = Priority.fromInt(task.priority).color,
+                isTaskComplete = task.isTaskComplete ?: false,
+                borderColor = Priority.fromInt(task.priority ?: 0).color,
                 onCheckBoxClick = {
                     onTaskCheckBoxClick()
                 }
@@ -125,12 +127,12 @@ fun TaskCard(
             Spacer(modifier = Modifier.width(10.dp))
             Column {
                 Text(
-                    text = task.title,
+                    text = task.title ?: "",
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.titleMedium,
                     textDecoration =
-                    if (task.isTaskComplete)
+                    if (task.isTaskComplete == true)
                         TextDecoration.LineThrough
                     else
                         TextDecoration.None

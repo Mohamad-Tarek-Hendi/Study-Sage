@@ -109,7 +109,7 @@ fun StudySessionCard(
                     .padding(start = 12.dp)
             ) {
                 Text(
-                    text = session.relatedStudySessionToSubject,
+                    text = session.relatedStudySessionToSubject.toString(),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.titleMedium

@@ -1,8 +1,8 @@
 package com.example.studysage.feature_study_sage_app.data.repository
 
 import com.example.studysage.feature_study_sage_app.data.dao.SessionDao
-import com.example.studysage.feature_study_sage_app.data.entity.SessionEntity
-import com.example.studysage.feature_study_sage_app.data.entity.SubjectEntity
+import com.example.studysage.feature_study_sage_app.data.mapper.toSessionEntity
+import com.example.studysage.feature_study_sage_app.domain.model.Session
 import com.example.studysage.feature_study_sage_app.domain.repository.SessionRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -10,11 +10,13 @@ import javax.inject.Inject
 class SessionRepositoryImp @Inject constructor(
     private val sessionDao: SessionDao
 ) : SessionRepository {
-    override suspend fun insertSession(session: SessionEntity) {
-        sessionDao.insertSession(session = session)
+    override suspend fun insertSession(session: Session) {
+        sessionDao.insertSession(
+            session = session.toSessionEntity()
+        )
     }
 
-    override suspend fun deleteSession(session: SessionEntity) {
+    override suspend fun deleteSession(session: Session) {
         TODO("Not yet implemented")
     }
 
@@ -22,11 +24,11 @@ class SessionRepositoryImp @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override fun getSessionList(): Flow<List<SessionEntity>> {
+    override fun getSessionList(): Flow<List<Session>> {
         TODO("Not yet implemented")
     }
 
-    override fun getRelatedSessionBySpecificSubject(subjectId: Int): Flow<List<SessionEntity>> {
+    override fun getRelatedSessionBySpecificSubject(subjectId: Int): Flow<List<Session>> {
         TODO("Not yet implemented")
     }
 
@@ -38,7 +40,7 @@ class SessionRepositoryImp @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override fun getAllSubjectList(): Flow<List<SubjectEntity>> {
+    override fun getAllSubjectList(): Flow<List<Session>> {
         TODO("Not yet implemented")
     }
 }

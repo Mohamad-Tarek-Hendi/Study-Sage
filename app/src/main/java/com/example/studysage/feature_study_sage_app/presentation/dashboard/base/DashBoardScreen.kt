@@ -50,6 +50,7 @@ import com.example.studysage.feature_study_sage_app.presentation.common.componen
 import com.example.studysage.feature_study_sage_app.presentation.common.component.studySessionList
 import com.example.studysage.feature_study_sage_app.presentation.common.component.taskList
 import com.example.studysage.feature_study_sage_app.presentation.common.data.PerformanceCardItem
+import com.example.studysage.feature_study_sage_app.presentation.dashboard.DashboardEvent
 import com.example.studysage.feature_study_sage_app.presentation.dashboard.DashboardState
 import com.example.studysage.feature_study_sage_app.presentation.dashboard.DashboardViewModel
 import com.example.studysage.feature_study_sage_app.presentation.dashboard.component.DashBoardScreenTopAppBar
@@ -72,6 +73,7 @@ fun DashboardScreenRoute(
 
     DashBoardScreen(
         state = state,
+        onEvent = viewModel::onEvent,
         onSubjectCardClick = { subjectId ->
             subjectId?.let {
                 val navArg = SubjectScreenNavArgs(subjectId = subjectId)
@@ -93,6 +95,7 @@ fun DashboardScreenRoute(
 @Composable
 private fun DashBoardScreen(
     state: DashboardState,
+    onEvent: (DashboardEvent) -> Unit,
     onSubjectCardClick: (Int?) -> Unit,
     onTaskCardClick: (Int?) -> Unit,
     onStartStudySessionButtonClick: () -> Unit
@@ -181,20 +184,36 @@ private fun DashBoardScreen(
     AddSubjectDialog(
         isOpen = isAddSubjectDialogOpen,
         selectedColor = state.subjectCardColorList,
-        subjectName = state.subjectName,
-        goalHour = state.goalStudyHour,
-        onColorChange = { },
-        onSubjectNameValueChange = { },
-        onGoalHourValueChange = { },
-        onDismissRequest = { isAddSubjectDialogOpen = false },
-        onConfirmationClick = { isAddSubjectDialogOpen = false }
+        subjectName = state.subjectName ?: "",
+        goalHour = state.goalStudyHour ?: "",
+        onColorChange = { subjectColor ->
+            onEvent(DashboardEvent.OnSubjectCardColorChange(subjectColor = subjectColor))
+        },
+        onSubjectNameValueChange = { subjectName ->
+            onEvent(DashboardEvent.OnSubjectNameChange(subjectName = subjectName))
+        },
+        onGoalHourValueChange = { goalStudyHour ->
+            onEvent(DashboardEvent.OnStudyHoursChange(goalStudyHours = goalStudyHour))
+        },
+        onDismissRequest = {
+            isAddSubjectDialogOpen = false
+        },
+        onConfirmationClick = {
+            onEvent(DashboardEvent.SaveSubject)
+            isAddSubjectDialogOpen = false
+        }
     )
 
     DeleteDialog(
         isOpen = isDeleteSessionDialogOpen,
         deleteMessage = stringResource(id = R.string.delete_subject_message),
-        onConfirmationClick = { isDeleteSessionDialogOpen = false },
-        onDismissRequest = { isDeleteSessionDialogOpen = false }
+        onConfirmationClick = {
+            onEvent(DashboardEvent.DeleteSubject)
+            isDeleteSessionDialogOpen = false
+        },
+        onDismissRequest = {
+            isDeleteSessionDialogOpen = false
+        }
     )
 
     Scaffold(
@@ -256,7 +275,9 @@ private fun DashBoardScreen(
                 tasks = taskList,
                 emptyText = "You don't have any task.\n Click the + button to add new task",
                 onTaskCardClick = onTaskCardClick,
-                onCheckBoxClick = {/*TODO*/ }
+                onCheckBoxClick = { taskCheckBox ->
+                    onEvent(DashboardEvent.OnTaskIsCompleteChanged(task = taskCheckBox))
+                }
             )
             item {
                 Spacer(modifier = Modifier.height(20.dp))
@@ -265,7 +286,8 @@ private fun DashBoardScreen(
                 sectionTitle = "Recent Session Study",
                 sessions = sessionLists,
                 emptyText = "You don't have any study session.\n start a study session to begin recording your progress",
-                onDeleteIconClick = {
+                onDeleteIconClick = { session ->
+                    onEvent(DashboardEvent.OnDeleteSessionButtonClick(session = session))
                     isDeleteSessionDialogOpen = true
                 }
             )
@@ -354,10 +376,12 @@ fun SubjectCardSection(
     ) {
         items(subjectList) { subject ->
             SubjectCard(
-                subjectName = subject.name,
-                gradient = subject.color,
+                subjectName = subject.name!!,
+                gradient = subject.color!!,
                 onClick = {
-                    onSubjectCardClick(subject.id)
+                    subject.id?.let {
+                        onSubjectCardClick(it)
+                    }
                 }
             )
         }

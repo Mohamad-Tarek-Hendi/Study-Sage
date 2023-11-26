@@ -60,7 +60,7 @@ fun SubjectDropBottomSheet(
                             }
                     ) {
                         Text(
-                            text = subject.name
+                            text = subject.name ?: ""
                         )
                     }
                 }

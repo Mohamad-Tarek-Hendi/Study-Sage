@@ -5,9 +5,9 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class SubjectEntity(
-    val name: String,
-    val goalHours: Float,
-    val color: List<Int>,
+    val name: String? = null,
+    val goalHours: Float? = null,
+    val color: List<Int>? = emptyList(),
     @PrimaryKey(autoGenerate = true)
     val id: Int? = null
 )

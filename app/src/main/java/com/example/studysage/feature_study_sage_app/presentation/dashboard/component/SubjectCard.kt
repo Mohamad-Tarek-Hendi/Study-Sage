@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.studysage.R
 
@@ -30,7 +31,7 @@ fun SubjectCard(
 ) {
     Box(
         modifier = modifier
-            .size(150.dp)
+            .size(160.dp)
             .clickable {
                 onClick()
             }
@@ -47,7 +48,7 @@ fun SubjectCard(
             Column(
                 modifier = modifier
                     .padding(12.dp),
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.subject),
@@ -57,9 +58,11 @@ fun SubjectCard(
                     contentScale = ContentScale.FillBounds
                 )
                 Text(
-                    text = subjectName,
+                    text = subjectName.take(15),
                     style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White
+                    color = Color.White,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 2
                 )
             }
         }

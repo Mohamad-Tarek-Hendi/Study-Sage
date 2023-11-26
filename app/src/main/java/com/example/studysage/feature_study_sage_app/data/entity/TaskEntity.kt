@@ -5,13 +5,13 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class TaskEntity(
-    val taskSubjectId: Int,
-    val title: String,
-    val description: String,
-    val date: Long,
-    val priority: Int,
-    val relatedTaskToSubject: String,
-    val isTaskComplete: Boolean,
+    val taskSubjectId: Int? = null,
+    val title: String? = null,
+    val description: String? = null,
+    val date: Long? = null,
+    val priority: Int? = null,
+    val relatedTaskToSubject: String? = null,
+    val isTaskComplete: Boolean? = null,
     @PrimaryKey(autoGenerate = true)
     val id: Int? = null
 )
