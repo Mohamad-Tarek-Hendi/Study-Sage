@@ -40,8 +40,8 @@ import com.example.studysage.feature_study_sage_app.domain.model.Subject
 fun AddSubjectDialog(
     isOpen: Boolean,
     selectedColor: List<Color>,
-    subjectName: String,
-    goalHour: String,
+    subjectName: String?,
+    goalHour: String?,
     onColorChange: (List<Color>) -> Unit,
     onSubjectNameValueChange: (String) -> Unit,
     onGoalHourValueChange: (String) -> Unit,
@@ -53,14 +53,14 @@ fun AddSubjectDialog(
     var goalHourError by rememberSaveable { mutableStateOf<String?>(null) }
 
     subjectNameError = when {
-        subjectName.isBlank() -> "Please enter subject name."
+        subjectName.isNullOrBlank() -> "Please enter subject name."
         subjectName.length < 2 -> "Subject Name is too short."
         subjectName.length > 20 -> "Subject Name is too long."
         else -> null
     }
 
     goalHourError = when {
-        goalHour.isBlank() -> "Please enter goal hour name."
+        goalHour.isNullOrBlank() -> "Please enter goal hour name."
         goalHour.toFloatOrNull() == null -> "Invalid number."
         goalHour.toFloat() < 1f -> "please set at least 1 hour."
         goalHour.toFloat() > 1000f -> "please set a maximum of 1000 hours."
@@ -104,28 +104,32 @@ fun AddSubjectDialog(
                             )
                         }
                     }
-                    OutlinedTextField(
-                        value = subjectName,
-                        onValueChange = onSubjectNameValueChange,
-                        label = {
-                            Text(text = stringResource(id = R.string.subject_name))
-                        },
-                        singleLine = true,
-                        isError = subjectNameError != null && subjectName.isNotBlank(),
-                        supportingText = { Text(text = subjectNameError.orEmpty()) }
-                    )
+                    if (subjectName != null) {
+                        OutlinedTextField(
+                            value = subjectName,
+                            onValueChange = onSubjectNameValueChange,
+                            label = {
+                                Text(text = stringResource(id = R.string.subject_name))
+                            },
+                            singleLine = true,
+                            isError = subjectNameError != null && subjectName.isNotBlank(),
+                            supportingText = { Text(text = subjectNameError.orEmpty()) }
+                        )
+                    }
                     Spacer(modifier = Modifier.height(10.dp))
-                    OutlinedTextField(
-                        value = goalHour,
-                        onValueChange = onGoalHourValueChange,
-                        label = {
-                            Text(text = stringResource(id = R.string.goal_study_hour))
-                        },
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        isError = goalHourError != null && goalHour.isNotBlank(),
-                        supportingText = { Text(text = goalHourError.orEmpty()) }
-                    )
+                    if (goalHour != null) {
+                        OutlinedTextField(
+                            value = goalHour,
+                            onValueChange = onGoalHourValueChange,
+                            label = {
+                                Text(text = stringResource(id = R.string.goal_study_hour))
+                            },
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            isError = goalHourError != null && goalHour.isNotBlank(),
+                            supportingText = { Text(text = goalHourError.orEmpty()) }
+                        )
+                    }
                 }
             },
             onDismissRequest = {

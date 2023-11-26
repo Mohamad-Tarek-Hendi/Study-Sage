@@ -8,7 +8,7 @@ data class DashboardState(
     val totalSubjectCount: Int = 0,
     val totalStudiedHour: Float = 0f,
     val totalGoalStudiedHour: Float = 0f,
-    val subjects: List<Subject> = emptyList(),
+    val subjectList: List<Subject> = emptyList(),
     val subjectName: String? = null,
     val goalStudyHour: String? = null,
     val subjectCardColorList: List<Color> = Subject.subjectCardColors.random(),

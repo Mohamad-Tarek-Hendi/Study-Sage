@@ -26,7 +26,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.studysage.R
 import com.example.studysage.feature_study_sage_app.domain.model.Session
 import com.example.studysage.feature_study_sage_app.domain.model.Subject
@@ -50,6 +50,7 @@ import com.example.studysage.feature_study_sage_app.presentation.common.componen
 import com.example.studysage.feature_study_sage_app.presentation.common.component.studySessionList
 import com.example.studysage.feature_study_sage_app.presentation.common.component.taskList
 import com.example.studysage.feature_study_sage_app.presentation.common.data.PerformanceCardItem
+import com.example.studysage.feature_study_sage_app.presentation.dashboard.DashboardState
 import com.example.studysage.feature_study_sage_app.presentation.dashboard.DashboardViewModel
 import com.example.studysage.feature_study_sage_app.presentation.dashboard.component.DashBoardScreenTopAppBar
 import com.example.studysage.feature_study_sage_app.presentation.dashboard.component.SubjectCard
@@ -67,8 +68,10 @@ fun DashboardScreenRoute(
     navigator: DestinationsNavigator
 ) {
     val viewModel: DashboardViewModel = hiltViewModel()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     DashBoardScreen(
+        state = state,
         onSubjectCardClick = { subjectId ->
             subjectId?.let {
                 val navArg = SubjectScreenNavArgs(subjectId = subjectId)
@@ -89,6 +92,7 @@ fun DashboardScreenRoute(
 
 @Composable
 private fun DashBoardScreen(
+    state: DashboardState,
     onSubjectCardClick: (Int?) -> Unit,
     onTaskCardClick: (Int?) -> Unit,
     onStartStudySessionButtonClick: () -> Unit
@@ -174,20 +178,14 @@ private fun DashBoardScreen(
 
     var isDeleteSessionDialogOpen by rememberSaveable { mutableStateOf(false) }
 
-    var selectedColor by remember { mutableStateOf(Subject.subjectCardColors.random()) }
-
-    var subjectName by remember { mutableStateOf("") }
-
-    var goalHour by remember { mutableStateOf("") }
-
     AddSubjectDialog(
         isOpen = isAddSubjectDialogOpen,
-        selectedColor = selectedColor,
-        subjectName = subjectName,
-        goalHour = goalHour,
-        onColorChange = { selectedColor = it },
-        onSubjectNameValueChange = { subjectName = it },
-        onGoalHourValueChange = { goalHour = it },
+        selectedColor = state.subjectCardColorList,
+        subjectName = state.subjectName,
+        goalHour = state.goalStudyHour,
+        onColorChange = { },
+        onSubjectNameValueChange = { },
+        onGoalHourValueChange = { },
         onDismissRequest = { isAddSubjectDialogOpen = false },
         onConfirmationClick = { isAddSubjectDialogOpen = false }
     )
@@ -216,15 +214,15 @@ private fun DashBoardScreen(
                     performanceCardsItems = listOf(
                         PerformanceCardItem(
                             name = "Subject Count",
-                            count = "5"
+                            count = state.totalSubjectCount.toString()
                         ),
                         PerformanceCardItem(
                             name = "Studied Hours",
-                            count = "10"
+                            count = state.totalStudiedHour.toString()
                         ),
                         PerformanceCardItem(
                             name = "Goal Study Hours",
-                            count = "15"
+                            count = state.totalGoalStudiedHour.toString()
                         )
                     ),
                     modifier = Modifier
@@ -235,7 +233,7 @@ private fun DashBoardScreen(
             item {
                 SubjectCardSection(
                     modifier = Modifier.fillMaxWidth(),
-                    subjectList = subjectList,
+                    subjectList = state.subjectList,
                     emptyText = stringResource(id = R.string.hint_to_add_subject),
                     onClickAddSubjectButton = {
                         isAddSubjectDialogOpen = true

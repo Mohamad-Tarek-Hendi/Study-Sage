@@ -18,11 +18,11 @@ class SubjectRepositoryImp @Inject constructor(
     }
 
     override fun getTotalSubjectCount(): Flow<Int> {
-        TODO("Not yet implemented")
+        return subjectDao.getTotalSubjectCount()
     }
 
     override fun getTotalGoalHour(): Flow<Float> {
-        TODO("Not yet implemented")
+        return subjectDao.getTotalGoalHour()
     }
 
     override suspend fun getSubjectById(subjectId: Int): SubjectEntity? {
@@ -30,6 +30,6 @@ class SubjectRepositoryImp @Inject constructor(
     }
 
     override fun getAllSubjectList(): Flow<List<SubjectEntity>> {
-        TODO("Not yet implemented")
+        return subjectDao.getAllSubjectList()
     }
 }
