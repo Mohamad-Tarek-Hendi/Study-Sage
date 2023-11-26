@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.studysage.R
 import com.example.studysage.feature_study_sage_app.domain.model.Session
 import com.example.studysage.feature_study_sage_app.domain.model.Subject
@@ -42,6 +43,7 @@ import com.example.studysage.feature_study_sage_app.presentation.common.componen
 import com.example.studysage.feature_study_sage_app.presentation.common.component.taskList
 import com.example.studysage.feature_study_sage_app.presentation.common.data.PerformanceCardItem
 import com.example.studysage.feature_study_sage_app.presentation.destinations.TaskScreenRouteDestination
+import com.example.studysage.feature_study_sage_app.presentation.subject.SubjectViewModel
 import com.example.studysage.feature_study_sage_app.presentation.subject.component.CircularProgress
 import com.example.studysage.feature_study_sage_app.presentation.subject.component.LargeTopAppBar
 import com.example.studysage.feature_study_sage_app.presentation.task.base.TaskScreenNavArgs
@@ -57,6 +59,8 @@ data class SubjectScreenNavArgs(
 fun SubjectScreenRoute(
     navigator: DestinationsNavigator
 ) {
+    val viewModel: SubjectViewModel = hiltViewModel()
+
     SubjectScreen(
         onBackButtonClick = {
             navigator.navigateUp()

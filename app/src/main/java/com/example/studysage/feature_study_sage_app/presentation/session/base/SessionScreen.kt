@@ -28,11 +28,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.studysage.R
 import com.example.studysage.feature_study_sage_app.domain.model.Session
 import com.example.studysage.feature_study_sage_app.presentation.common.component.DeleteDialog
 import com.example.studysage.feature_study_sage_app.presentation.common.component.SubjectDropBottomSheet
 import com.example.studysage.feature_study_sage_app.presentation.common.component.studySessionList
+import com.example.studysage.feature_study_sage_app.presentation.session.SessionViewModel
 import com.example.studysage.feature_study_sage_app.presentation.session.component.SessionTopAppBar
 import com.example.studysage.feature_study_sage_app.presentation.session.component.TimerSession
 import com.ramcosta.composedestinations.annotation.Destination
@@ -44,6 +46,8 @@ import kotlinx.coroutines.launch
 fun SessionScreenRoute(
     navigator: DestinationsNavigator
 ) {
+    val viewModel: SessionViewModel = hiltViewModel()
+
     SessionScreen(
         onBackButtonClick = {
             navigator.navigateUp()

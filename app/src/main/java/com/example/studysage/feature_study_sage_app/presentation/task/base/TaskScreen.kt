@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.studysage.R
 import com.example.studysage.core.presentation.theme.Red
 import com.example.studysage.feature_study_sage_app.presentation.common.component.DatePickerDialog
@@ -44,6 +45,7 @@ import com.example.studysage.feature_study_sage_app.presentation.common.componen
 import com.example.studysage.feature_study_sage_app.presentation.common.component.SubjectDropBottomSheet
 import com.example.studysage.feature_study_sage_app.presentation.common.mapping.changeMillisToDateString
 import com.example.studysage.feature_study_sage_app.presentation.common.util.Priority
+import com.example.studysage.feature_study_sage_app.presentation.task.TaskViewModel
 import com.example.studysage.feature_study_sage_app.presentation.task.component.TaskPriority
 import com.example.studysage.feature_study_sage_app.presentation.task.component.TaskTopAppBar
 import com.ramcosta.composedestinations.annotation.Destination
@@ -61,6 +63,8 @@ data class TaskScreenNavArgs(
 fun TaskScreenRoute(
     navigator: DestinationsNavigator
 ) {
+    val viewModel: TaskViewModel = hiltViewModel()
+
     TaskScreen(
         onBackButtonClick = {
             navigator.navigateUp()
