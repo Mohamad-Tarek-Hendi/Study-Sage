@@ -24,6 +24,6 @@ interface TaskDao {
     @Query("SELECT * FROM TaskEntity WHERE taskSubjectId=:subjectId")
     fun getRelatedTasksBySpecificSubject(subjectId: Int): Flow<List<TaskEntity>>
 
-    @Query("SELECT * FROM TaskEntity")
+    @Query("SELECT * FROM TaskEntity ORDER BY date DESC , priority DESC")
     fun getTaskList(): Flow<List<TaskEntity>>
 }

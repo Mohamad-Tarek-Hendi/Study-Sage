@@ -17,7 +17,8 @@ import com.example.studysage.feature_study_sage_app.data.type_converter.ColorLis
         TaskEntity::class,
         SessionEntity::class
     ],
-    version = 2
+    version = 2,
+    exportSchema = false
 )
 @TypeConverters(ColorListConverter::class)
 abstract class StudySageDatabase : RoomDatabase() {

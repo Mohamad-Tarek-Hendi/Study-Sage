@@ -22,10 +22,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -50,6 +54,7 @@ import com.example.studysage.feature_study_sage_app.presentation.common.componen
 import com.example.studysage.feature_study_sage_app.presentation.common.component.studySessionList
 import com.example.studysage.feature_study_sage_app.presentation.common.component.taskList
 import com.example.studysage.feature_study_sage_app.presentation.common.data.PerformanceCardItem
+import com.example.studysage.feature_study_sage_app.presentation.common.util.SnackBarEvent
 import com.example.studysage.feature_study_sage_app.presentation.dashboard.DashboardEvent
 import com.example.studysage.feature_study_sage_app.presentation.dashboard.DashboardState
 import com.example.studysage.feature_study_sage_app.presentation.dashboard.DashboardViewModel
@@ -62,6 +67,8 @@ import com.example.studysage.feature_study_sage_app.presentation.subject.base.Su
 import com.example.studysage.feature_study_sage_app.presentation.task.base.TaskScreenNavArgs
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.collectLatest
 
 @Destination(start = true)
 @Composable
@@ -70,9 +77,14 @@ fun DashboardScreenRoute(
 ) {
     val viewModel: DashboardViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val taskList by viewModel.taskList.collectAsStateWithLifecycle()
+    val sessionList by viewModel.sessionList.collectAsStateWithLifecycle()
 
     DashBoardScreen(
         state = state,
+        taskList = taskList,
+        sessionList = sessionList,
+        snackBarEvent = viewModel.snackBarEventFlow,
         onEvent = viewModel::onEvent,
         onSubjectCardClick = { subjectId ->
             subjectId?.let {
@@ -95,13 +107,16 @@ fun DashboardScreenRoute(
 @Composable
 private fun DashBoardScreen(
     state: DashboardState,
+    taskList: List<Task>,
+    sessionList: List<Session>,
+    snackBarEvent: SharedFlow<SnackBarEvent>,
     onEvent: (DashboardEvent) -> Unit,
     onSubjectCardClick: (Int?) -> Unit,
     onTaskCardClick: (Int?) -> Unit,
     onStartStudySessionButtonClick: () -> Unit
 ) {
     //Fake Data
-    val subjectList =
+    val subjectFakeList =
         listOf(
             Subject(
                 id = 0,
@@ -135,7 +150,7 @@ private fun DashBoardScreen(
             )
         )
 
-    val taskList =
+    val taskFakeList =
         listOf(
             Task(
                 id = 1,
@@ -159,7 +174,7 @@ private fun DashBoardScreen(
             )
         )
 
-    val sessionLists =
+    val sessionFakeLists =
         listOf(
             Session(
                 id = 0,
@@ -180,6 +195,10 @@ private fun DashBoardScreen(
     var isAddSubjectDialogOpen by rememberSaveable { mutableStateOf(false) }
 
     var isDeleteSessionDialogOpen by rememberSaveable { mutableStateOf(false) }
+
+    val snackBarState = remember {
+        SnackbarHostState()
+    }
 
     AddSubjectDialog(
         isOpen = isAddSubjectDialogOpen,
@@ -208,7 +227,7 @@ private fun DashBoardScreen(
         isOpen = isDeleteSessionDialogOpen,
         deleteMessage = stringResource(id = R.string.delete_subject_message),
         onConfirmationClick = {
-            onEvent(DashboardEvent.DeleteSubject)
+            onEvent(DashboardEvent.DeleteSession)
             isDeleteSessionDialogOpen = false
         },
         onDismissRequest = {
@@ -216,7 +235,25 @@ private fun DashBoardScreen(
         }
     )
 
+    LaunchedEffect(key1 = true) {
+        snackBarEvent.collectLatest { event ->
+            when (event) {
+                is SnackBarEvent.ShowSnackBar -> {
+                    snackBarState.showSnackbar(
+                        message = event.message,
+                        duration = event.messageDuration
+                    )
+                }
+            }
+        }
+    }
+
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackBarState
+            )
+        },
         topBar =
         {
             DashBoardScreenTopAppBar()
@@ -284,7 +321,7 @@ private fun DashBoardScreen(
             }
             studySessionList(
                 sectionTitle = "Recent Session Study",
-                sessions = sessionLists,
+                sessions = sessionList,
                 emptyText = "You don't have any study session.\n start a study session to begin recording your progress",
                 onDeleteIconClick = { session ->
                     onEvent(DashboardEvent.OnDeleteSessionButtonClick(session = session))
