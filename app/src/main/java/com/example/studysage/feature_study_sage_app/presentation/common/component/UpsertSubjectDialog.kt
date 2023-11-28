@@ -37,7 +37,7 @@ import com.example.studysage.R
 import com.example.studysage.feature_study_sage_app.domain.model.Subject
 
 @Composable
-fun AddSubjectDialog(
+fun UpsertSubjectDialog(
     isOpen: Boolean,
     selectedColor: List<Color>,
     subjectName: String,

@@ -18,6 +18,7 @@ fun SubjectEntity.toSubject(): Subject {
 
 fun Subject.toSubjectEntity(): SubjectEntity {
     return SubjectEntity(
+        id = id,
         name = name,
         goalHours = goalHours,
         color = color?.map {

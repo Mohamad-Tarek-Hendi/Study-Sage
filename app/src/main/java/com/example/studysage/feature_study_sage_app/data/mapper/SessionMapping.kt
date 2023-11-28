@@ -15,6 +15,7 @@ fun SessionEntity.toSession(): Session {
 
 fun Session.toSessionEntity(): SessionEntity {
     return SessionEntity(
+        id = id,
         sessionSubjectId = studySessionToSubject,
         relatedSessionToSubject = relatedStudySessionToSubject,
         date = date,

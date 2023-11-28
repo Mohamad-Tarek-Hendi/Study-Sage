@@ -18,9 +18,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,23 +35,28 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.studysage.R
 import com.example.studysage.feature_study_sage_app.domain.model.Session
-import com.example.studysage.feature_study_sage_app.domain.model.Subject
 import com.example.studysage.feature_study_sage_app.domain.model.Task
-import com.example.studysage.feature_study_sage_app.presentation.common.component.AddSubjectDialog
 import com.example.studysage.feature_study_sage_app.presentation.common.component.DeleteDialog
 import com.example.studysage.feature_study_sage_app.presentation.common.component.PerformanceCard
+import com.example.studysage.feature_study_sage_app.presentation.common.component.UpsertSubjectDialog
 import com.example.studysage.feature_study_sage_app.presentation.common.component.studySessionList
 import com.example.studysage.feature_study_sage_app.presentation.common.component.taskList
 import com.example.studysage.feature_study_sage_app.presentation.common.data.PerformanceCardItem
+import com.example.studysage.feature_study_sage_app.presentation.common.util.SnackBarEvent
 import com.example.studysage.feature_study_sage_app.presentation.destinations.TaskScreenRouteDestination
+import com.example.studysage.feature_study_sage_app.presentation.subject.SubjectEvent
+import com.example.studysage.feature_study_sage_app.presentation.subject.SubjectState
 import com.example.studysage.feature_study_sage_app.presentation.subject.SubjectViewModel
 import com.example.studysage.feature_study_sage_app.presentation.subject.component.CircularProgress
 import com.example.studysage.feature_study_sage_app.presentation.subject.component.LargeTopAppBar
 import com.example.studysage.feature_study_sage_app.presentation.task.base.TaskScreenNavArgs
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.collectLatest
 
 data class SubjectScreenNavArgs(
     val subjectId: Int
@@ -60,8 +68,14 @@ fun SubjectScreenRoute(
     navigator: DestinationsNavigator
 ) {
     val viewModel: SubjectViewModel = hiltViewModel()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val snackBarEventFlowState = viewModel.snackBarEventFlow
+    val onEvent = viewModel::onEvent
 
     SubjectScreen(
+        state = state,
+        onEvent = onEvent,
+        snackBarEvent = snackBarEventFlowState,
         onBackButtonClick = {
             navigator.navigateUp()
         },
@@ -79,6 +93,9 @@ fun SubjectScreenRoute(
 
 @Composable
 private fun SubjectScreen(
+    state: SubjectState,
+    onEvent: (SubjectEvent) -> Unit,
+    snackBarEvent: SharedFlow<SnackBarEvent>,
     onBackButtonClick: () -> Unit,
     onAddTaskFloatingButtonClick: () -> Unit,
     onTaskCardClick: (Int?) -> Unit
@@ -170,47 +187,86 @@ private fun SubjectScreen(
 
     var isDeleteSubjectDialogOpen by rememberSaveable { mutableStateOf(false) }
 
-    var selectedColor by remember { mutableStateOf(Subject.subjectCardColors.random()) }
+    val snackBarState = remember { SnackbarHostState() }
 
-    var subjectName by remember { mutableStateOf("") }
-
-    var goalHour by remember { mutableStateOf("") }
-
-    AddSubjectDialog(
+    UpsertSubjectDialog(
         isOpen = isEditSubjectDialogOpen,
-        selectedColor = selectedColor,
-        subjectName = subjectName,
-        goalHour = goalHour,
-        onColorChange = { selectedColor = it },
-        onSubjectNameValueChange = { subjectName = it },
-        onGoalHourValueChange = { goalHour = it },
+        selectedColor = state.subjectCardColorList,
+        subjectName = state.subjectName ?: "",
+        goalHour = state.goalStudyHour ?: "",
+        onColorChange = { colorList ->
+            onEvent(SubjectEvent.OnSubjectCardColorChange(colorList = colorList))
+        },
+        onSubjectNameValueChange = { subjectName ->
+            onEvent(SubjectEvent.OnSubjectNameChange(subjectName = subjectName))
+        },
+        onGoalHourValueChange = { goalStudyHour ->
+            onEvent(SubjectEvent.OnGoalStudyHoursChange(goalStudyHours = goalStudyHour))
+        },
         onDismissRequest = { isEditSubjectDialogOpen = false },
-        onConfirmationClick = { isEditSubjectDialogOpen = false }
+        onConfirmationClick = {
+            onEvent(SubjectEvent.UpdateSubject)
+            isEditSubjectDialogOpen = false
+        }
     )
 
     DeleteDialog(
         isOpen = isDeleteSubjectDialogOpen,
         deleteMessage = stringResource(id = R.string.delete_subject_message),
-        onConfirmationClick = { isDeleteSubjectDialogOpen = false },
+        onConfirmationClick = {
+            onEvent(SubjectEvent.DeleteSubject)
+            isDeleteSubjectDialogOpen = false
+        },
         onDismissRequest = { isDeleteSubjectDialogOpen = false }
     )
 
     DeleteDialog(
         isOpen = isDeleteSessionDialogOpen,
         deleteMessage = stringResource(id = R.string.delete_session_message),
-        onConfirmationClick = { isDeleteSessionDialogOpen = false },
+        onConfirmationClick = {
+            onEvent(SubjectEvent.DeleteSession)
+            isDeleteSessionDialogOpen = false
+        },
         onDismissRequest = { isDeleteSessionDialogOpen = false }
     )
 
+    LaunchedEffect(key1 = snackBarState) {
+        snackBarEvent.collectLatest { event ->
+            when (event) {
+                is SnackBarEvent.ShowSnackBar -> {
+                    snackBarState.showSnackbar(
+                        message = event.message,
+                        duration = event.messageDuration
+                    )
+                }
+
+                SnackBarEvent.NavigateUp -> onBackButtonClick()
+            }
+        }
+    }
+
+    LaunchedEffect(key1 = state.goalStudyHour, key2 = state.studyHour) {
+        onEvent(SubjectEvent.UpdateProgress)
+    }
+
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarState)
+        },
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
                 scrollBehavior = scrollBehavior,
-                title = stringResource(id = R.string.subject_screen_large_top_appbar),
-                onBackButtonClick = { onBackButtonClick() },
-                onDeleteButtonClick = { isDeleteSubjectDialogOpen = true },
-                onEditButtonClick = { isEditSubjectDialogOpen = true })
+                title = state.subjectName,
+                onBackButtonClick = {
+                    onBackButtonClick()
+                },
+                onDeleteButtonClick = {
+                    isDeleteSubjectDialogOpen = true
+                },
+                onEditButtonClick = {
+                    isEditSubjectDialogOpen = true
+                })
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
@@ -236,41 +292,48 @@ private fun SubjectScreen(
                     performanceCardsItems = listOf(
                         PerformanceCardItem(
                             name = stringResource(id = R.string.goal_study_hour),
-                            count = "4.0"
+                            count = state.goalStudyHour ?: "0.00"
                         ),
                         PerformanceCardItem(
                             name = stringResource(id = R.string.study_hour),
-                            count = "0.0"
+                            count = state.studyHour.toString()
                         )
                     ),
-                    progress = 0.75f
+                    progress = state.progress ?: 0f
                 )
             }
             taskList(
                 sectionTitle = "UpComing Task ",
-                tasks = taskList,
-                emptyText = "You don't have any task.\n Click the + button to add new task",
+                tasks = state.upcomingTaskList ?: emptyList(),
+                emptyText = "You don't have any upComing tasks.\n Click the + button to add new task",
                 onTaskCardClick = onTaskCardClick,
-                onCheckBoxClick = {/*TODO*/ }
+                onCheckBoxClick = { upComingTask ->
+                    onEvent(SubjectEvent.OnTaskIsCompleteChange(task = upComingTask))
+                }
             )
             item {
                 Spacer(modifier = Modifier.height(20.dp))
             }
             taskList(
                 sectionTitle = "Complete Task ",
-                tasks = taskList,
+                tasks = state.completedTaskList ?: emptyList(),
                 emptyText = "You don't have any Complete task.\n Click the check box to complete task.",
                 onTaskCardClick = {/*TODO*/ },
-                onCheckBoxClick = {/*TODO*/ }
+                onCheckBoxClick = { taskCompleted ->
+                    onEvent(SubjectEvent.OnTaskIsCompleteChange(task = taskCompleted))
+                }
             )
             item {
                 Spacer(modifier = Modifier.height(20.dp))
             }
             studySessionList(
                 sectionTitle = "Recent Session Study",
-                sessions = sessionLists,
+                sessions = state.recentSessionList ?: emptyList(),
                 emptyText = "You don't have any study session.\n start a study session to begin recording your progress",
-                onDeleteIconClick = { isDeleteSessionDialogOpen = true }
+                onDeleteIconClick = { session ->
+                    isDeleteSessionDialogOpen = true
+                    onEvent(SubjectEvent.OnDeleteSubjectButtonClick(session = session))
+                }
             )
         }
     }

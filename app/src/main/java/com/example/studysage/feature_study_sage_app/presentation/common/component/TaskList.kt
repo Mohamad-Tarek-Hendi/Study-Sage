@@ -48,40 +48,38 @@ fun LazyListScope.taskList(
         )
     }
 
-    if (tasks != null) {
-        if (tasks.isEmpty()) {
-            item {
-                Column(
+    if (tasks.isEmpty()) {
+        item {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Image(
-                        modifier = Modifier
-                            .size(120.dp)
-                            .clip(CircleShape),
-                        painter = painterResource(id = R.drawable.task),
-                        contentDescription = emptyText,
-                        contentScale = ContentScale.Crop
-                    )
-                    Spacer(
-                        modifier = Modifier
-                            .height(12.dp)
-                    )
-                    Text(
-                        text = emptyText,
-                        style = MaterialTheme
-                            .typography.bodySmall
-                            .copy(
-                                fontWeight = FontWeight.Bold
-                            ),
-                        color = Color.Gray,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 7.dp)
-                    )
-                }
+                        .size(120.dp)
+                        .clip(CircleShape),
+                    painter = painterResource(id = R.drawable.task),
+                    contentDescription = emptyText,
+                    contentScale = ContentScale.Crop
+                )
+                Spacer(
+                    modifier = Modifier
+                        .height(12.dp)
+                )
+                Text(
+                    text = emptyText,
+                    style = MaterialTheme
+                        .typography.bodySmall
+                        .copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                    color = Color.Gray,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 7.dp)
+                )
             }
         }
     }

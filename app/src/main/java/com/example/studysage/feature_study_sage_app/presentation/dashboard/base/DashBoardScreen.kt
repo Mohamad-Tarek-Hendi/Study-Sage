@@ -48,9 +48,9 @@ import com.example.studysage.R
 import com.example.studysage.feature_study_sage_app.domain.model.Session
 import com.example.studysage.feature_study_sage_app.domain.model.Subject
 import com.example.studysage.feature_study_sage_app.domain.model.Task
-import com.example.studysage.feature_study_sage_app.presentation.common.component.AddSubjectDialog
 import com.example.studysage.feature_study_sage_app.presentation.common.component.DeleteDialog
 import com.example.studysage.feature_study_sage_app.presentation.common.component.PerformanceCard
+import com.example.studysage.feature_study_sage_app.presentation.common.component.UpsertSubjectDialog
 import com.example.studysage.feature_study_sage_app.presentation.common.component.studySessionList
 import com.example.studysage.feature_study_sage_app.presentation.common.component.taskList
 import com.example.studysage.feature_study_sage_app.presentation.common.data.PerformanceCardItem
@@ -196,11 +196,9 @@ private fun DashBoardScreen(
 
     var isDeleteSessionDialogOpen by rememberSaveable { mutableStateOf(false) }
 
-    val snackBarState = remember {
-        SnackbarHostState()
-    }
+    val snackBarState = remember { SnackbarHostState() }
 
-    AddSubjectDialog(
+    UpsertSubjectDialog(
         isOpen = isAddSubjectDialogOpen,
         selectedColor = state.subjectCardColorList,
         subjectName = state.subjectName ?: "",
@@ -244,6 +242,8 @@ private fun DashBoardScreen(
                         duration = event.messageDuration
                     )
                 }
+
+                SnackBarEvent.NavigateUp -> {}
             }
         }
     }

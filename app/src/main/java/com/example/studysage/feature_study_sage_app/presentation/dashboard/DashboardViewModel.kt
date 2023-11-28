@@ -48,14 +48,14 @@ class DashboardViewModel @Inject constructor(
         )
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
         initialValue = DashboardState()
     )
 
     private val _tasksList: StateFlow<List<Task>> = taskRepository.getTaskList()
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
             initialValue = emptyList()
         )
 
@@ -65,7 +65,7 @@ class DashboardViewModel @Inject constructor(
     private val _sessionList: StateFlow<List<Session>> = sessionRepository.getSessionList()
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
             initialValue = emptyList()
         )
 

@@ -1,6 +1,8 @@
 package com.example.studysage.feature_study_sage_app.data.repository
 
+import com.example.studysage.feature_study_sage_app.data.dao.SessionDao
 import com.example.studysage.feature_study_sage_app.data.dao.SubjectDao
+import com.example.studysage.feature_study_sage_app.data.dao.TaskDao
 import com.example.studysage.feature_study_sage_app.data.mapper.toSubject
 import com.example.studysage.feature_study_sage_app.data.mapper.toSubjectEntity
 import com.example.studysage.feature_study_sage_app.domain.model.Subject
@@ -10,7 +12,9 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class SubjectRepositoryImp @Inject constructor(
-    private val subjectDao: SubjectDao
+    private val subjectDao: SubjectDao,
+    private val taskDao: TaskDao,
+    private val sessionDao: SessionDao
 ) : SubjectRepository {
     override suspend fun upsertSubject(subject: Subject) {
         subjectDao.upsertSubject(
@@ -19,7 +23,9 @@ class SubjectRepositoryImp @Inject constructor(
     }
 
     override suspend fun deleteSubject(subjectId: Int) {
-        TODO("Not yet implemented")
+        taskDao.deleteRelatedTasksBySpecificSubject(subjectId = subjectId)
+        sessionDao.deleteRelatedSessionsBySpecificSubject(subjectId = subjectId)
+        subjectDao.deleteSubject(subjectId = subjectId)
     }
 
     override fun getTotalSubjectCount(): Flow<Int> {
@@ -31,7 +37,7 @@ class SubjectRepositoryImp @Inject constructor(
     }
 
     override suspend fun getSubjectById(subjectId: Int): Subject? {
-        TODO("Not yet implemented")
+        return subjectDao.getSubjectById(subjectId = subjectId)?.toSubject()
     }
 
     override fun getAllSubjectList(): Flow<List<Subject>> {

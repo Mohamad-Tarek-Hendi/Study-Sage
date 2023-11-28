@@ -18,7 +18,7 @@ import androidx.compose.ui.text.style.TextOverflow
 
 @Composable
 fun LargeTopAppBar(
-    title: String,
+    title: String?,
     scrollBehavior: TopAppBarScrollBehavior,
     onBackButtonClick: () -> Unit,
     onDeleteButtonClick: () -> Unit,
@@ -36,7 +36,7 @@ fun LargeTopAppBar(
         },
         title = {
             Text(
-                text = title,
+                text = title ?: "",
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.headlineSmall

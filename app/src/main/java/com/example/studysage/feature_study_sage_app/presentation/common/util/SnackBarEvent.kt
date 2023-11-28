@@ -7,4 +7,6 @@ sealed class SnackBarEvent {
         val message: String,
         val messageDuration: SnackbarDuration = SnackbarDuration.Short
     ) : SnackBarEvent()
+
+    data object NavigateUp : SnackBarEvent()
 }
