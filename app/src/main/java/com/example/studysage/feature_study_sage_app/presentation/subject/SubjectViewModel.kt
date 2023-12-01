@@ -5,10 +5,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.studysage.feature_study_sage_app.domain.model.Subject
+import com.example.studysage.feature_study_sage_app.domain.model.Task
 import com.example.studysage.feature_study_sage_app.domain.repository.SessionRepository
 import com.example.studysage.feature_study_sage_app.domain.repository.SubjectRepository
 import com.example.studysage.feature_study_sage_app.domain.repository.TaskRepository
-import com.example.studysage.feature_study_sage_app.presentation.common.mapping.toHours
+import com.example.studysage.feature_study_sage_app.presentation.common.converter.toHours
 import com.example.studysage.feature_study_sage_app.presentation.common.util.SnackBarEvent
 import com.example.studysage.feature_study_sage_app.presentation.navArgs
 import com.example.studysage.feature_study_sage_app.presentation.subject.base.SubjectScreenNavArgs
@@ -102,7 +103,9 @@ class SubjectViewModel @Inject constructor(
             }
 
             is SubjectEvent.OnDeleteSubjectButtonClick -> TODO()
-            is SubjectEvent.OnTaskIsCompleteChange -> TODO()
+            is SubjectEvent.OnTaskIsCompleteChange -> {
+                updateTask(task = event.task)
+            }
         }
     }
 
@@ -123,14 +126,14 @@ class SubjectViewModel @Inject constructor(
 
     private fun updateSubject() {
         viewModelScope.launch {
-
+            val state = _state.value
             try {
                 subjectRepository.upsertSubject(
                     subject = Subject(
-                        id = state.value.currentSubjectId,
-                        name = state.value.subjectName,
-                        goalHours = state.value.goalStudyHour?.toFloatOrNull(),
-                        color = state.value.subjectCardColorList
+                        id = state.currentSubjectId,
+                        name = state.subjectName,
+                        goalHours = state.goalStudyHour?.toFloatOrNull(),
+                        color = state.subjectCardColorList
                     )
                 )
                 _snackBarEventFlow.emit(
@@ -178,6 +181,39 @@ class SubjectViewModel @Inject constructor(
                 _snackBarEventFlow.emit(
                     SnackBarEvent.ShowSnackBar(
                         message = "Couldn't deleted subject. ${e.message}",
+                        messageDuration = SnackbarDuration.Long
+                    )
+                )
+            }
+        }
+    }
+
+    private fun updateTask(task: Task) {
+        viewModelScope.launch {
+            try {
+                taskRepository.upsertTask(
+                    task = task.copy(
+                        isTaskComplete = !task.isTaskComplete!!
+                    )
+                )
+                if (task.isTaskComplete) {
+                    _snackBarEventFlow.emit(
+                        SnackBarEvent.ShowSnackBar(
+                            message = "Upcoming task update successfully"
+                        )
+                    )
+                } else {
+                    _snackBarEventFlow.emit(
+                        SnackBarEvent.ShowSnackBar(
+                            message = "Complete task update successfully"
+                        )
+                    )
+                }
+
+            } catch (e: Exception) {
+                _snackBarEventFlow.emit(
+                    SnackBarEvent.ShowSnackBar(
+                        message = "Couldn't update task. ${e.message}",
                         messageDuration = SnackbarDuration.Long
                     )
                 )

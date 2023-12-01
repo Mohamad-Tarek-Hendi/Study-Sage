@@ -9,7 +9,7 @@ import com.example.studysage.feature_study_sage_app.domain.model.Task
 import com.example.studysage.feature_study_sage_app.domain.repository.SessionRepository
 import com.example.studysage.feature_study_sage_app.domain.repository.SubjectRepository
 import com.example.studysage.feature_study_sage_app.domain.repository.TaskRepository
-import com.example.studysage.feature_study_sage_app.presentation.common.mapping.toHours
+import com.example.studysage.feature_study_sage_app.presentation.common.converter.toHours
 import com.example.studysage.feature_study_sage_app.presentation.common.util.SnackBarEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -109,8 +109,14 @@ class DashboardViewModel @Inject constructor(
                 }
             }
 
-            is DashboardEvent.OnTaskIsCompleteChanged -> TODO()
-            DashboardEvent.DeleteSession -> TODO()
+            is DashboardEvent.OnTaskIsCompleteChanged -> {
+                updateTask(event.task)
+            }
+
+            DashboardEvent.DeleteSession -> {
+
+            }
+
             DashboardEvent.SaveSubject -> {
                 saveSubject()
             }
@@ -121,12 +127,13 @@ class DashboardViewModel @Inject constructor(
 
     private fun saveSubject() {
         viewModelScope.launch {
+            val state = _state.value
             try {
                 subjectRepository.upsertSubject(
                     subject = Subject(
-                        name = state.value.subjectName,
-                        goalHours = state.value.goalStudyHour?.toFloatOrNull() ?: 1f,
-                        color = state.value.subjectCardColorList,
+                        name = state.subjectName,
+                        goalHours = state.goalStudyHour?.toFloatOrNull() ?: 1f,
+                        color = state.subjectCardColorList,
                     )
                 )
                 _state.update {
@@ -151,6 +158,30 @@ class DashboardViewModel @Inject constructor(
 
             }
 
+        }
+    }
+
+    private fun updateTask(task: Task) {
+        viewModelScope.launch {
+            try {
+                taskRepository.upsertTask(
+                    task = task.copy(
+                        isTaskComplete = !task.isTaskComplete!!
+                    )
+                )
+                _snackBarEventFlow.emit(
+                    SnackBarEvent.ShowSnackBar(
+                        message = "Task update successfully"
+                    )
+                )
+            } catch (e: Exception) {
+                _snackBarEventFlow.emit(
+                    SnackBarEvent.ShowSnackBar(
+                        message = "Couldn't update task. ${e.message}",
+                        messageDuration = SnackbarDuration.Long
+                    )
+                )
+            }
         }
     }
 }

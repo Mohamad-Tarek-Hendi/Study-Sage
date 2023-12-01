@@ -26,7 +26,9 @@ fun TaskPriority(
     Box(
         modifier = modifier
             .background(color = backgroundColor)
-            .clickable { onClick() }
+            .clickable {
+                onClick()
+            }
             .clip(shape = RoundedCornerShape(5.dp))
             .padding(5.dp)
             .border(

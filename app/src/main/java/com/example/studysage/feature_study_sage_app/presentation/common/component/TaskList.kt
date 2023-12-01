@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.studysage.R
 import com.example.studysage.feature_study_sage_app.domain.model.Task
+import com.example.studysage.feature_study_sage_app.presentation.common.converter.changeMillisToDateString
 import com.example.studysage.feature_study_sage_app.presentation.common.util.Priority
 
 fun LazyListScope.taskList(
@@ -137,7 +138,7 @@ fun TaskCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "${task.date}",
+                    text = task.date.changeMillisToDateString(),
                     style = MaterialTheme.typography.bodySmall
                 )
             }

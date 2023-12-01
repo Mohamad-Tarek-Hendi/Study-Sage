@@ -1,5 +1,6 @@
 package com.example.studysage.feature_study_sage_app.presentation.session.base
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,40 +28,64 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.studysage.R
+import com.example.studysage.core.presentation.theme.Red
 import com.example.studysage.feature_study_sage_app.domain.model.Session
 import com.example.studysage.feature_study_sage_app.presentation.common.component.DeleteDialog
 import com.example.studysage.feature_study_sage_app.presentation.common.component.SubjectDropBottomSheet
 import com.example.studysage.feature_study_sage_app.presentation.common.component.studySessionList
+import com.example.studysage.feature_study_sage_app.presentation.common.util.Constant.ACTION_SERVICE_CANCEL
+import com.example.studysage.feature_study_sage_app.presentation.common.util.Constant.ACTION_SERVICE_START
+import com.example.studysage.feature_study_sage_app.presentation.common.util.Constant.ACTION_SERVICE_STOP
 import com.example.studysage.feature_study_sage_app.presentation.session.SessionViewModel
 import com.example.studysage.feature_study_sage_app.presentation.session.component.SessionTopAppBar
 import com.example.studysage.feature_study_sage_app.presentation.session.component.TimerSession
+import com.example.studysage.feature_study_sage_app.presentation.session.service.ServiceHelper
+import com.example.studysage.feature_study_sage_app.presentation.session.service.StudySessionTimerService
+import com.example.studysage.feature_study_sage_app.presentation.session.service.TimerState
+import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
 
-@Destination
+@Destination(
+    deepLinks = [
+        DeepLink(
+            action = Intent.ACTION_VIEW,
+            uriPattern = "study_smart://dashboard/session"
+        )
+    ]
+)
 @Composable
 fun SessionScreenRoute(
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    timerService: StudySessionTimerService
 ) {
     val viewModel: SessionViewModel = hiltViewModel()
 
     SessionScreen(
         onBackButtonClick = {
             navigator.navigateUp()
-        }
+        },
+        timerService = timerService
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SessionScreen(
-    onBackButtonClick: () -> Unit
+    onBackButtonClick: () -> Unit,
+    timerService: StudySessionTimerService
 ) {
+
+    val context = LocalContext.current
+
+    //Fake data
     val sessionLists =
         listOf(
             Session(
@@ -77,6 +103,11 @@ private fun SessionScreen(
                 duration = 0L
             )
         )
+
+    val hours by timerService.hours
+    val minutes by timerService.minutes
+    val seconds by timerService.seconds
+    val currentTimerState by timerService.currentTimerState
 
     val scope = rememberCoroutineScope()
 
@@ -127,7 +158,10 @@ private fun SessionScreen(
                 TimerSession(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(1f)
+                        .aspectRatio(1f),
+                    hours = hours,
+                    minutes = minutes,
+                    seconds = seconds
                 )
             }
             item {
@@ -144,9 +178,25 @@ private fun SessionScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(12.dp),
-                    cancelButtonClick = { /*TODO*/ },
-                    startButtonClick = { /*TODO*/ },
-                    finishButtonClick = {}
+                    cancelButtonClick = {
+                        ServiceHelper.triggerForegroundService(
+                            context = context,
+                            action = ACTION_SERVICE_CANCEL
+                        )
+                    },
+                    startButtonClick = {
+                        ServiceHelper.triggerForegroundService(
+                            context = context,
+                            action = if (currentTimerState == TimerState.STARTED) {
+                                ACTION_SERVICE_STOP
+                            } else {
+                                ACTION_SERVICE_START
+                            }
+                        )
+                    },
+                    finishButtonClick = {},
+                    timerState = currentTimerState,
+                    seconds = seconds
                 )
             }
             studySessionList(
@@ -195,6 +245,8 @@ private fun RelatedToSubjectSession(
 @Composable
 private fun ButtonSection(
     modifier: Modifier,
+    timerState: TimerState,
+    seconds: String,
     cancelButtonClick: () -> Unit,
     startButtonClick: () -> Unit,
     finishButtonClick: () -> Unit
@@ -204,21 +256,35 @@ private fun ButtonSection(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Button(
-            onClick = { cancelButtonClick() }) {
+            onClick = cancelButtonClick,
+            enabled = seconds != "00" && timerState != TimerState.STARTED
+        ) {
             Text(
                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                 text = "Cancel"
             )
         }
         Button(
-            onClick = { startButtonClick() }) {
+            onClick = startButtonClick,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (timerState == TimerState.STARTED) Red
+                else MaterialTheme.colorScheme.primary,
+                contentColor = Color.White
+            )
+        ) {
             Text(
                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                text = "Start"
+                text = when (timerState) {
+                    TimerState.STARTED -> "Stop"
+                    TimerState.STOPPED -> "Resume"
+                    else -> "Start"
+                }
             )
         }
         Button(
-            onClick = { finishButtonClick() }) {
+            onClick = finishButtonClick,
+            enabled = seconds != "00" && timerState != TimerState.STARTED
+        ) {
             Text(
                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                 text = "Finish"

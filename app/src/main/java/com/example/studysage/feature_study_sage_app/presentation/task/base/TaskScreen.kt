@@ -22,10 +22,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,18 +41,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.studysage.R
-import com.example.studysage.core.presentation.theme.Red
 import com.example.studysage.feature_study_sage_app.presentation.common.component.DatePickerDialog
 import com.example.studysage.feature_study_sage_app.presentation.common.component.DeleteDialog
 import com.example.studysage.feature_study_sage_app.presentation.common.component.SubjectDropBottomSheet
-import com.example.studysage.feature_study_sage_app.presentation.common.mapping.changeMillisToDateString
+import com.example.studysage.feature_study_sage_app.presentation.common.converter.changeMillisToDateString
 import com.example.studysage.feature_study_sage_app.presentation.common.util.Priority
+import com.example.studysage.feature_study_sage_app.presentation.common.util.SnackBarEvent
+import com.example.studysage.feature_study_sage_app.presentation.task.TaskEvent
+import com.example.studysage.feature_study_sage_app.presentation.task.TaskState
 import com.example.studysage.feature_study_sage_app.presentation.task.TaskViewModel
 import com.example.studysage.feature_study_sage_app.presentation.task.component.TaskPriority
 import com.example.studysage.feature_study_sage_app.presentation.task.component.TaskTopAppBar
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.Instant
 
@@ -64,8 +72,13 @@ fun TaskScreenRoute(
     navigator: DestinationsNavigator
 ) {
     val viewModel: TaskViewModel = hiltViewModel()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val onEvent = viewModel::onEvent
 
     TaskScreen(
+        state = state,
+        onEvent = onEvent,
+        snackBarEvent = viewModel.snackBarEventFlow,
         onBackButtonClick = {
             navigator.navigateUp()
         }
@@ -74,28 +87,27 @@ fun TaskScreenRoute(
 
 @Composable
 private fun TaskScreen(
+    state: TaskState,
+    snackBarEvent: SharedFlow<SnackBarEvent>,
+    onEvent: (TaskEvent) -> Unit,
     onBackButtonClick: () -> Unit
 ) {
 
     val scope = rememberCoroutineScope()
 
-    var title by remember { mutableStateOf("") }
-
-    var description by remember { mutableStateOf("") }
-
     var titleError by rememberSaveable { mutableStateOf<String?>(null) }
     titleError = when {
-        title.isBlank() -> stringResource(id = R.string.task_title_is_blank_error)
-        title.length < 4 -> stringResource(id = R.string.task_title_is_too_short_error)
-        title.length > 30 -> stringResource(id = R.string.task_title_is_too_long_error)
+        state.title.isBlank() -> stringResource(id = R.string.task_title_is_blank_error)
+        state.title.length < 4 -> stringResource(id = R.string.task_title_is_too_short_error)
+        state.title.length > 30 -> stringResource(id = R.string.task_title_is_too_long_error)
         else -> null
     }
 
     var descriptionError by rememberSaveable { mutableStateOf<String?>(null) }
     descriptionError = when {
-        description.isBlank() -> stringResource(id = R.string.task_description_is_blank_error)
-        description.length < 4 -> stringResource(id = R.string.task_title_is_too_short_error)
-        description.length > 30 -> stringResource(id = R.string.task_description_is_too_long_error)
+        state.description.isBlank() -> stringResource(id = R.string.task_description_is_blank_error)
+        state.description.length < 4 -> stringResource(id = R.string.task_title_is_too_short_error)
+        state.description.length > 30 -> stringResource(id = R.string.task_description_is_too_long_error)
         else -> null
     }
 
@@ -112,47 +124,89 @@ private fun TaskScreen(
 
     var isSubjectDropBottomSheet by remember { mutableStateOf(false) }
 
+    val snackBarState = remember { SnackbarHostState() }
+
     DeleteDialog(
         isOpen = isOpenDeleteDialog,
         deleteMessage = stringResource(R.string.delete_task),
-        onDismissRequest = { isOpenDeleteDialog = false },
-        onConfirmationClick = { isOpenDeleteDialog = false }
+        onDismissRequest = {
+            isOpenDeleteDialog = false
+        },
+        onConfirmationClick = {
+            onEvent(TaskEvent.DeleteTask)
+            isOpenDeleteDialog = false
+        }
     )
 
     DatePickerDialog(
         datePickerState = datePickerState,
         isOpen = isOpenDatePickerDialog,
         onDismissRequest = { isOpenDatePickerDialog = false },
-        onConfirmButtonClick = { isOpenDatePickerDialog = false },
+        onConfirmButtonClick = {
+            isOpenDatePickerDialog = false
+        },
         onDateSelected = { date_selected ->
-
+            onEvent(TaskEvent.OnDateChange(dateSelected = date_selected))
         }
     )
 
     SubjectDropBottomSheet(
         sheetState = modalBottomSheetState,
         isOpen = isSubjectDropBottomSheet,
-        subjectList = emptyList(),
-        onSubjectClick = {
+        subjectList = state.subjectList,
+        onSubjectClick = { subject ->
             scope.launch {
                 modalBottomSheetState.hide()
             }.invokeOnCompletion {
                 if (!modalBottomSheetState.isVisible) {
                     isSubjectDropBottomSheet = false
                 }
+                onEvent(
+                    TaskEvent.OnRelatedSubjectSelect(subject = subject)
+                )
             }
         },
         onDismissRequest = { isSubjectDropBottomSheet = false }
     )
 
-    Scaffold(topBar = {
-        TaskTopAppBar(title = "Task",
-            isTaskExist = true,
-            isComplete = false,
-            checkBoxBorderColor = Red,
-            onBackButtonClick = { onBackButtonClick() },
-            onDeleteButtonClick = { isOpenDeleteDialog = true }) {}
-    }) { paddingValues ->
+    LaunchedEffect(key1 = snackBarState) {
+        snackBarEvent.collectLatest { event ->
+            when (event) {
+                is SnackBarEvent.ShowSnackBar -> {
+                    snackBarState.showSnackbar(
+                        message = event.message,
+                        duration = event.messageDuration
+                    )
+                }
+
+                SnackBarEvent.NavigateUp -> {
+                    onBackButtonClick()
+                }
+            }
+        }
+    }
+
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackBarState
+            )
+        },
+        topBar = {
+            TaskTopAppBar(title = "Task",
+                isTaskExist = state.taskId != null,
+                isComplete = state.isTaskIsComplete,
+                checkBoxBorderColor = state.priority.color,
+                onBackButtonClick = {
+                    onBackButtonClick()
+                },
+                onDeleteButtonClick = {
+                    isOpenDeleteDialog = true
+                },
+                onCheckBoxClick = {
+                    onEvent(TaskEvent.OnIsCompleteChange)
+                })
+        }) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -162,23 +216,32 @@ private fun TaskScreen(
         ) {
 
             OutlinedTextField(modifier = Modifier.fillMaxWidth(),
-                value = title,
-                onValueChange = { title = it },
+                value = state.title,
+                onValueChange = {
+                    onEvent(TaskEvent.OnTitleChange(title = it))
+                },
                 label = {
                     Text(text = stringResource(id = R.string.task_title))
                 },
                 singleLine = true,
-                isError = titleError != null && title.isNotBlank(),
-                supportingText = { Text(text = titleError.orEmpty()) })
+                isError = titleError != null && state.title.isNotBlank(),
+                supportingText = {
+                    Text(text = titleError.orEmpty())
+                })
             Spacer(modifier = Modifier.height(10.dp))
-            OutlinedTextField(modifier = Modifier.fillMaxWidth(),
-                value = description,
-                onValueChange = { description = it },
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = state.description,
+                onValueChange = {
+                    onEvent(TaskEvent.OnDescriptionChange(description = it))
+                },
                 label = {
                     Text(text = stringResource(id = R.string.task_description))
                 },
-                isError = descriptionError != null && description.isNotBlank(),
-                supportingText = { Text(text = descriptionError.orEmpty()) })
+                isError = descriptionError != null && state.description.isNotBlank(),
+                supportingText = {
+                    Text(text = descriptionError.orEmpty())
+                })
             Spacer(modifier = Modifier.height(20.dp))
             Text(
                 text = stringResource(id = R.string.task_date),
@@ -191,7 +254,7 @@ private fun TaskScreen(
             ) {
                 Text(
                     //Map long Date millis format to string
-                    text = datePickerState.selectedDateMillis.changeMillisToDateString(),
+                    text = state.date.changeMillisToDateString(),
                     style = MaterialTheme.typography.bodyLarge
                 )
                 IconButton(onClick = {
@@ -211,7 +274,11 @@ private fun TaskScreen(
             Spacer(modifier = Modifier.height(10.dp))
             Row(modifier = Modifier.fillMaxWidth()) {
                 PrioritySection(
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    state = state,
+                    onPriorityClick = { priority ->
+                        onEvent(TaskEvent.OnPriorityChange(priority = priority))
+                    }
                 )
             }
 
@@ -225,8 +292,9 @@ private fun TaskScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val firstSubject = state.subjectList.firstOrNull()?.name ?: ""
                 Text(
-                    text = "English",
+                    text = state.relatedTaskToSubject ?: firstSubject,
                     style = MaterialTheme.typography.bodyLarge
                 )
                 IconButton(onClick = {
@@ -240,7 +308,9 @@ private fun TaskScreen(
             }
             Spacer(modifier = Modifier.height(10.dp))
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    onEvent(TaskEvent.SaveTask)
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 20.dp),
@@ -257,21 +327,25 @@ private fun TaskScreen(
 @Composable
 fun PrioritySection(
     modifier: Modifier,
+    state: TaskState,
+    onPriorityClick: (Priority) -> Unit
 ) {
     Priority.entries.forEach { priority ->
         TaskPriority(modifier = modifier,
             priorityTitle = priority.title,
             backgroundColor = priority.color,
-            borderColor = if (priority == Priority.AVERAGE) {
+            borderColor = if (priority == state.priority) {
                 Color.White
             } else {
                 Color.Transparent
             },
-            priorityTitleColor = if (priority == Priority.AVERAGE) {
+            priorityTitleColor = if (priority == state.priority) {
                 Color.White
             } else {
                 Color.White.copy(alpha = 0.7f)
             },
-            onClick = { /*TODO*/ })
+            onClick = {
+                onPriorityClick(priority)
+            })
     }
 }

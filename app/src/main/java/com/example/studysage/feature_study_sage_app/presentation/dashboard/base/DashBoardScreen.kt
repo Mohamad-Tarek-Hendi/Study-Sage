@@ -66,11 +66,13 @@ import com.example.studysage.feature_study_sage_app.presentation.destinations.Ta
 import com.example.studysage.feature_study_sage_app.presentation.subject.base.SubjectScreenNavArgs
 import com.example.studysage.feature_study_sage_app.presentation.task.base.TaskScreenNavArgs
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 
-@Destination(start = true)
+@RootNavGraph(start = true)
+@Destination()
 @Composable
 fun DashboardScreenRoute(
     navigator: DestinationsNavigator
@@ -233,7 +235,7 @@ private fun DashBoardScreen(
         }
     )
 
-    LaunchedEffect(key1 = true) {
+    LaunchedEffect(key1 = snackBarState) {
         snackBarEvent.collectLatest { event ->
             when (event) {
                 is SnackBarEvent.ShowSnackBar -> {

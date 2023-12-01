@@ -1,4 +1,4 @@
-package com.example.studysage.feature_study_sage_app.presentation.common.mapping
+package com.example.studysage.feature_study_sage_app.presentation.common.converter
 
 import java.time.Instant
 import java.time.LocalDate

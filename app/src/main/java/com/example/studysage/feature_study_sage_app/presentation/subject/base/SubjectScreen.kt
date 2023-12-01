@@ -80,7 +80,12 @@ fun SubjectScreenRoute(
             navigator.navigateUp()
         },
         onAddTaskFloatingButtonClick = {
-            navigator.navigate(TaskScreenRouteDestination(taskId = null, subjectId = -1))
+            navigator.navigate(
+                TaskScreenRouteDestination(
+                    taskId = null,
+                    subjectId = state.currentSubjectId
+                )
+            )
         },
         onTaskCardClick = { taskId ->
             taskId?.let {
@@ -292,11 +297,11 @@ private fun SubjectScreen(
                     performanceCardsItems = listOf(
                         PerformanceCardItem(
                             name = stringResource(id = R.string.goal_study_hour),
-                            count = state.goalStudyHour ?: "0.00"
+                            count = state.studyHour.toString()
                         ),
                         PerformanceCardItem(
                             name = stringResource(id = R.string.study_hour),
-                            count = state.studyHour.toString()
+                            count = state.goalStudyHour ?: "0.0"
                         )
                     ),
                     progress = state.progress ?: 0f
