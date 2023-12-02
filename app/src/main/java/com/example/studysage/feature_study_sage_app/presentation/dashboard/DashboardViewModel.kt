@@ -133,7 +133,7 @@ class DashboardViewModel @Inject constructor(
                     subject = Subject(
                         name = state.subjectName,
                         goalHours = state.goalStudyHour?.toFloatOrNull() ?: 1f,
-                        color = state.subjectCardColorList,
+                        color = state.subjectCardColorList
                     )
                 )
                 _state.update {
