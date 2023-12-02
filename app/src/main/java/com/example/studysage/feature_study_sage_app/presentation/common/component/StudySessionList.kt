@@ -30,6 +30,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.studysage.R
 import com.example.studysage.feature_study_sage_app.domain.model.Session
+import com.example.studysage.feature_study_sage_app.presentation.common.converter.changeMillisToDateString
+import com.example.studysage.feature_study_sage_app.presentation.common.converter.toHours
 
 fun LazyListScope.studySessionList(
     sectionTitle: String,
@@ -49,7 +51,8 @@ fun LazyListScope.studySessionList(
         item {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(bottom = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
@@ -117,7 +120,7 @@ fun StudySessionCard(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = "${session.date}",
+                    text = session.date.changeMillisToDateString(),
                     style = MaterialTheme.typography.bodySmall
                 )
             }
@@ -125,7 +128,7 @@ fun StudySessionCard(
             Spacer(modifier = Modifier.weight(1f))
 
             Text(
-                text = "${session.duration} Hour",
+                text = "${session.duration?.toHours()} Hour",
                 style = MaterialTheme.typography.titleMedium
             )
 

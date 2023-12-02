@@ -9,14 +9,19 @@ import android.os.Bundle
 import android.os.IBinder
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat
 import com.example.studysage.core.presentation.theme.StudySageTheme
 import com.example.studysage.feature_study_sage_app.presentation.NavGraphs
 import com.example.studysage.feature_study_sage_app.presentation.destinations.SessionScreenRouteDestination
 import com.example.studysage.feature_study_sage_app.presentation.session.service.StudySessionTimerService
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.navigation.dependency
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,6 +59,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             if (isBound) {
                 StudySageTheme {
+                    ChangeBarColor(color = MaterialTheme.colorScheme.background)
                     DestinationsNavHost(
                         navGraph = NavGraphs.root,
                         dependenciesContainerBuilder = {
@@ -83,5 +89,16 @@ class MainActivity : ComponentActivity() {
         super.onStop()
         unbindService(serviceConnection)
         isBound = false
+    }
+}
+
+
+@Composable
+fun ChangeBarColor(color: Color) {
+    val systemUiController = rememberSystemUiController()
+    SideEffect {
+        systemUiController.setSystemBarsColor(
+            color = color
+        )
     }
 }

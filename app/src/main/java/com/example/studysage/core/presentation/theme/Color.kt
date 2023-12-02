@@ -69,8 +69,43 @@ val Blue = Color(0xFF2965C9)
 val Green = Color(0xFF1E9651)
 val Orange = Color(0xFFFF9800)
 
-val gradient1 = listOf(Color(0xFFad5389), Color(0xFF3c1053))
-val gradient2 = listOf(Color(0xFF3A6073), Color(0xFF16222A))
-val gradient3 = listOf(Color(0xFFF857A6), Color(0xFFFF5858))
-val gradient4 = listOf(Color(0xFF00d2ff), Color(0xFF3a7bd5))
-val gradient5 = listOf(Color(0xFF99f2c8), Color(0xFF1f4037))
+val gradient1 = listOf(
+    Color(0xfff0bd28),
+    Color(0xfff1c746),
+    Color(0xfff4cf65)
+)
+val gradient2 = listOf(
+    Color(0xfffdbda1),
+    Color(0xfffcaf90),
+    Color(0xfff9a27b)
+)
+
+//val gradient3 = listOf(
+//    Color(0xff54e1b6),
+//    Color(0xff36ddab),
+//    Color(0xff11d79b)
+//)
+//val gradient4 = listOf(Color(0xFF00d2ff), Color(0xFF3a7bd5))
+val gradient5 = listOf(
+    Color(0xff54e1b6),
+    Color(0xff36ddab),
+    Color(0xff11d79b)
+)
+val gradient6 = listOf(
+    Color(0xffaeb4fd),
+    Color(0xff9fa5fe),
+    Color(0xff8f98fd)
+)
+
+val OrangeYellow1 = Color(0xfff0bd28)
+val OrangeYellow2 = Color(0xfff1c746)
+val OrangeYellow3 = Color(0xfff4cf65)
+val Beige1 = Color(0xfffdbda1)
+val Beige2 = Color(0xfffcaf90)
+val Beige3 = Color(0xfff9a27b)
+val LightGreen1 = Color(0xff54e1b6)
+val LightGreen2 = Color(0xff36ddab)
+val LightGreen3 = Color(0xff11d79b)
+val BlueViolet1 = Color(0xffaeb4fd)
+val BlueViolet2 = Color(0xff9fa5fe)
+val BlueViolet3 = Color(0xff8f98fd)

@@ -40,8 +40,8 @@ import com.example.studysage.R
 import com.example.studysage.feature_study_sage_app.domain.model.Session
 import com.example.studysage.feature_study_sage_app.domain.model.Task
 import com.example.studysage.feature_study_sage_app.presentation.common.component.DeleteDialog
+import com.example.studysage.feature_study_sage_app.presentation.common.component.EditSubjectDialog
 import com.example.studysage.feature_study_sage_app.presentation.common.component.PerformanceCard
-import com.example.studysage.feature_study_sage_app.presentation.common.component.UpsertSubjectDialog
 import com.example.studysage.feature_study_sage_app.presentation.common.component.studySessionList
 import com.example.studysage.feature_study_sage_app.presentation.common.component.taskList
 import com.example.studysage.feature_study_sage_app.presentation.common.data.PerformanceCardItem
@@ -194,7 +194,7 @@ private fun SubjectScreen(
 
     val snackBarState = remember { SnackbarHostState() }
 
-    UpsertSubjectDialog(
+    EditSubjectDialog(
         isOpen = isEditSubjectDialogOpen,
         selectedColor = state.subjectCardColorList,
         subjectName = state.subjectName ?: "",
@@ -297,11 +297,11 @@ private fun SubjectScreen(
                     performanceCardsItems = listOf(
                         PerformanceCardItem(
                             name = stringResource(id = R.string.goal_study_hour),
-                            count = state.studyHour.toString()
+                            count = state.goalStudyHour.toString()
                         ),
                         PerformanceCardItem(
                             name = stringResource(id = R.string.study_hour),
-                            count = state.goalStudyHour ?: "0.0"
+                            count = state.studyHour.toString()
                         )
                     ),
                     progress = state.progress ?: 0f

@@ -82,9 +82,9 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
     // Room
-    implementation("androidx.room:room-runtime:2.6.0")
-    ksp("androidx.room:room-compiler:2.6.0")
-    implementation("androidx.room:room-paging:2.6.0")
+    implementation("androidx.room:room-runtime:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-paging:2.6.1")
 
     // Compose Destinations (Make easy than normal navigation)
     implementation("io.github.raamcosta.compose-destinations:core:1.9.53")
@@ -97,7 +97,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
 
     // Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:2.6.0")
+    implementation("androidx.room:room-ktx:2.6.1")
 
     // Paging
     implementation("androidx.paging:paging-runtime-ktx:3.2.1")
@@ -116,10 +116,15 @@ dependencies {
     // For Swipe
     implementation("com.google.accompanist:accompanist-swiperefresh:0.24.2-alpha")
 
-
     //Fonts
     implementation("androidx.compose.ui:ui-text-google-fonts:1.5.4")
 
     //Scale from Material
     implementation("androidx.compose.material:material-icons-extended-android:1.5.4")
+
+    // system UI Controller
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
+
+    // Extended Icons
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
 }

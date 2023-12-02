@@ -114,7 +114,7 @@ class DashboardViewModel @Inject constructor(
             }
 
             DashboardEvent.DeleteSession -> {
-
+                deleteSession()
             }
 
             DashboardEvent.SaveSubject -> {
@@ -178,6 +178,28 @@ class DashboardViewModel @Inject constructor(
                 _snackBarEventFlow.emit(
                     SnackBarEvent.ShowSnackBar(
                         message = "Couldn't update task. ${e.message}",
+                        messageDuration = SnackbarDuration.Long
+                    )
+                )
+            }
+        }
+    }
+
+    private fun deleteSession() {
+        viewModelScope.launch {
+            try {
+                state.value.session?.let {
+                    sessionRepository.deleteSession(session = it)
+                }
+                _snackBarEventFlow.emit(
+                    SnackBarEvent.ShowSnackBar(
+                        message = "Session has been delete successfully"
+                    )
+                )
+            } catch (e: Exception) {
+                _snackBarEventFlow.emit(
+                    SnackBarEvent.ShowSnackBar(
+                        message = "Couldn't delete session. ${e.message}",
                         messageDuration = SnackbarDuration.Long
                     )
                 )
