@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.studysage.R
 import com.example.studysage.feature_study_sage_app.domain.model.Task
 import com.example.studysage.feature_study_sage_app.presentation.common.converter.changeMillisToDateString
@@ -44,7 +45,10 @@ fun LazyListScope.taskList(
     item {
         Text(
             text = sectionTitle,
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodySmall.copy(
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold
+            ),
             modifier = Modifier.padding(12.dp)
         )
     }
@@ -60,9 +64,9 @@ fun LazyListScope.taskList(
                     modifier = Modifier
                         .size(120.dp)
                         .clip(CircleShape),
-                    painter = painterResource(id = R.drawable.task),
+                    painter = painterResource(id = R.drawable.no_task),
                     contentDescription = emptyText,
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.FillBounds
                 )
                 Spacer(
                     modifier = Modifier

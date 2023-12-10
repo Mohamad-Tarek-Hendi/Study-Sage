@@ -1,6 +1,6 @@
-package com.example.studysage.feature_study_sage_app.data.mapper
+package com.example.studysage.feature_study_sage_app.data.local.mapper
 
-import com.example.studysage.feature_study_sage_app.data.entity.SessionEntity
+import com.example.studysage.feature_study_sage_app.data.local.entity.SessionEntity
 import com.example.studysage.feature_study_sage_app.domain.model.Session
 
 fun SessionEntity.toSession(): Session {

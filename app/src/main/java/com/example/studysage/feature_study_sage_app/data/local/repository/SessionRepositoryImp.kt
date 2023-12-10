@@ -1,8 +1,8 @@
-package com.example.studysage.feature_study_sage_app.data.repository
+package com.example.studysage.feature_study_sage_app.data.local.repository
 
-import com.example.studysage.feature_study_sage_app.data.dao.SessionDao
-import com.example.studysage.feature_study_sage_app.data.mapper.toSession
-import com.example.studysage.feature_study_sage_app.data.mapper.toSessionEntity
+import com.example.studysage.feature_study_sage_app.data.local.dao.SessionDao
+import com.example.studysage.feature_study_sage_app.data.local.mapper.toSession
+import com.example.studysage.feature_study_sage_app.data.local.mapper.toSessionEntity
 import com.example.studysage.feature_study_sage_app.domain.model.Session
 import com.example.studysage.feature_study_sage_app.domain.repository.SessionRepository
 import kotlinx.coroutines.flow.Flow

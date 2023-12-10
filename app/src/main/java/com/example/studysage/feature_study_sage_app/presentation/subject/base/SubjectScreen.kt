@@ -39,8 +39,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.studysage.R
 import com.example.studysage.feature_study_sage_app.domain.model.Session
 import com.example.studysage.feature_study_sage_app.domain.model.Task
+import com.example.studysage.feature_study_sage_app.presentation.common.component.AddAndEditSubjectDialog
 import com.example.studysage.feature_study_sage_app.presentation.common.component.DeleteDialog
-import com.example.studysage.feature_study_sage_app.presentation.common.component.EditSubjectDialog
 import com.example.studysage.feature_study_sage_app.presentation.common.component.PerformanceCard
 import com.example.studysage.feature_study_sage_app.presentation.common.component.studySessionList
 import com.example.studysage.feature_study_sage_app.presentation.common.component.taskList
@@ -194,7 +194,7 @@ private fun SubjectScreen(
 
     val snackBarState = remember { SnackbarHostState() }
 
-    EditSubjectDialog(
+    AddAndEditSubjectDialog(
         isOpen = isEditSubjectDialogOpen,
         selectedColor = state.subjectCardColorList,
         subjectName = state.subjectName ?: "",
@@ -356,7 +356,8 @@ fun PerformanceCardWithProgressSection(
     }
     LazyRow(
         modifier = modifier,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceAround,
+        userScrollEnabled = true
     ) {
         items(performanceCardsItems.size) { index ->
             PerformanceCard(
@@ -369,7 +370,8 @@ fun PerformanceCardWithProgressSection(
 
         item {
             CircularProgress(
-                modifier = Modifier.size(75.dp),
+                modifier = Modifier
+                    .size(75.dp),
                 progress = progress,
                 progressPercentageValue = percentageProgressValue
             )

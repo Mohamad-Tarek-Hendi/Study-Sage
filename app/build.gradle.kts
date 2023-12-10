@@ -112,6 +112,8 @@ dependencies {
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3")
 
     // For Swipe
     implementation("com.google.accompanist:accompanist-swiperefresh:0.24.2-alpha")
@@ -127,4 +129,7 @@ dependencies {
 
     // Extended Icons
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
+
+    // Location Services
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 }

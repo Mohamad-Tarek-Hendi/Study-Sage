@@ -1,8 +1,8 @@
-package com.example.studysage.feature_study_sage_app.data.mapper
+package com.example.studysage.feature_study_sage_app.data.local.mapper
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import com.example.studysage.feature_study_sage_app.data.entity.SubjectEntity
+import com.example.studysage.feature_study_sage_app.data.local.entity.SubjectEntity
 import com.example.studysage.feature_study_sage_app.domain.model.Subject
 
 fun SubjectEntity.toSubject(): Subject {

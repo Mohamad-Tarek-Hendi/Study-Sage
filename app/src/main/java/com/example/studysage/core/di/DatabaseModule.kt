@@ -2,11 +2,11 @@ package com.example.studysage.core.di
 
 import android.app.Application
 import androidx.room.Room
-import com.example.studysage.feature_study_sage_app.data.dao.SessionDao
-import com.example.studysage.feature_study_sage_app.data.dao.SubjectDao
-import com.example.studysage.feature_study_sage_app.data.dao.TaskDao
-import com.example.studysage.feature_study_sage_app.data.db.StudySageDatabase
-import com.example.studysage.feature_study_sage_app.data.db.StudySageDatabase.Companion.DATABASE_NAME
+import com.example.studysage.feature_study_sage_app.data.local.dao.SessionDao
+import com.example.studysage.feature_study_sage_app.data.local.dao.SubjectDao
+import com.example.studysage.feature_study_sage_app.data.local.dao.TaskDao
+import com.example.studysage.feature_study_sage_app.data.local.db.StudySageDatabase
+import com.example.studysage.feature_study_sage_app.data.local.db.StudySageDatabase.Companion.DATABASE_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

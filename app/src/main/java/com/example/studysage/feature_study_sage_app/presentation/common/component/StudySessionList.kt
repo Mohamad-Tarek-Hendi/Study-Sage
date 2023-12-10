@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.studysage.R
 import com.example.studysage.feature_study_sage_app.domain.model.Session
 import com.example.studysage.feature_study_sage_app.presentation.common.converter.changeMillisToDateString
@@ -42,7 +43,10 @@ fun LazyListScope.studySessionList(
     item {
         Text(
             text = sectionTitle,
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodySmall.copy(
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold
+            ),
             modifier = Modifier.padding(12.dp)
         )
     }
@@ -59,7 +63,7 @@ fun LazyListScope.studySessionList(
                     modifier = Modifier
                         .size(120.dp)
                         .clip(CircleShape),
-                    painter = painterResource(id = R.drawable.study_session),
+                    painter = painterResource(id = R.drawable.timer),
                     contentDescription = emptyText
                 )
                 Spacer(

@@ -1,8 +1,8 @@
-package com.example.studysage.feature_study_sage_app.data.repository
+package com.example.studysage.feature_study_sage_app.data.local.repository
 
-import com.example.studysage.feature_study_sage_app.data.dao.TaskDao
-import com.example.studysage.feature_study_sage_app.data.mapper.toTask
-import com.example.studysage.feature_study_sage_app.data.mapper.toTaskEntity
+import com.example.studysage.feature_study_sage_app.data.local.dao.TaskDao
+import com.example.studysage.feature_study_sage_app.data.local.mapper.toTask
+import com.example.studysage.feature_study_sage_app.data.local.mapper.toTaskEntity
 import com.example.studysage.feature_study_sage_app.domain.model.Task
 import com.example.studysage.feature_study_sage_app.domain.repository.TaskRepository
 import kotlinx.coroutines.flow.Flow

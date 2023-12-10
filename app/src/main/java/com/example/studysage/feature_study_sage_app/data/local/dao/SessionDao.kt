@@ -1,11 +1,11 @@
-package com.example.studysage.feature_study_sage_app.data.dao
+package com.example.studysage.feature_study_sage_app.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.studysage.feature_study_sage_app.data.entity.SessionEntity
-import com.example.studysage.feature_study_sage_app.data.entity.SubjectEntity
+import com.example.studysage.feature_study_sage_app.data.local.entity.SessionEntity
+import com.example.studysage.feature_study_sage_app.data.local.entity.SubjectEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

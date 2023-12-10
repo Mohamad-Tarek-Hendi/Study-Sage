@@ -1,9 +1,9 @@
-package com.example.studysage.feature_study_sage_app.data.dao
+package com.example.studysage.feature_study_sage_app.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
-import com.example.studysage.feature_study_sage_app.data.entity.TaskEntity
+import com.example.studysage.feature_study_sage_app.data.local.entity.TaskEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

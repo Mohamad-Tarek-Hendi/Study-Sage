@@ -14,10 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -32,12 +29,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.studysage.R
 import com.example.studysage.feature_study_sage_app.domain.model.Subject
 
 @Composable
-fun EditSubjectDialog(
+fun AddAndEditSubjectDialog(
     isOpen: Boolean,
     selectedColor: List<Color>,
     subjectName: String,
@@ -69,11 +67,17 @@ fun EditSubjectDialog(
 
     if (isOpen) {
         AlertDialog(
-            icon = {
-                Icon(Icons.Filled.Add, contentDescription = "Example Icon")
-            },
             title = {
-                Text(text = stringResource(id = R.string.subject_hint_title))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.subject_hint_title),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             },
             text = {
                 Column() {
@@ -148,7 +152,9 @@ fun EditSubjectDialog(
                     },
                     enabled = subjectNameError == null && goalHourError == null
                 ) {
-                    Text("Confirm")
+                    Text(
+                        text = "Confirm",
+                    )
                 }
             }
         )

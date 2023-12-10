@@ -1,4 +1,4 @@
-package com.example.studysage.feature_study_sage_app.data.type_converter
+package com.example.studysage.feature_study_sage_app.data.local.type_converter
 
 import androidx.room.TypeConverter
 

@@ -1,4 +1,4 @@
-package com.example.studysage.feature_study_sage_app.data.entity
+package com.example.studysage.feature_study_sage_app.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -1,8 +1,8 @@
 package com.example.studysage.core.di
 
-import com.example.studysage.feature_study_sage_app.data.repository.SessionRepositoryImp
-import com.example.studysage.feature_study_sage_app.data.repository.SubjectRepositoryImp
-import com.example.studysage.feature_study_sage_app.data.repository.TaskRepositoryImp
+import com.example.studysage.feature_study_sage_app.data.local.repository.SessionRepositoryImp
+import com.example.studysage.feature_study_sage_app.data.local.repository.SubjectRepositoryImp
+import com.example.studysage.feature_study_sage_app.data.local.repository.TaskRepositoryImp
 import com.example.studysage.feature_study_sage_app.domain.repository.SessionRepository
 import com.example.studysage.feature_study_sage_app.domain.repository.SubjectRepository
 import com.example.studysage.feature_study_sage_app.domain.repository.TaskRepository

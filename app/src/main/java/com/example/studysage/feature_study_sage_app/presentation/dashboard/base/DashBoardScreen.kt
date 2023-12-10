@@ -43,6 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.studysage.R
@@ -50,8 +51,8 @@ import com.example.studysage.core.presentation.theme.md_theme_dark_onPrimaryCont
 import com.example.studysage.feature_study_sage_app.domain.model.Session
 import com.example.studysage.feature_study_sage_app.domain.model.Subject
 import com.example.studysage.feature_study_sage_app.domain.model.Task
+import com.example.studysage.feature_study_sage_app.presentation.common.component.AddAndEditSubjectDialog
 import com.example.studysage.feature_study_sage_app.presentation.common.component.DeleteDialog
-import com.example.studysage.feature_study_sage_app.presentation.common.component.EditSubjectDialog
 import com.example.studysage.feature_study_sage_app.presentation.common.component.PerformanceCard
 import com.example.studysage.feature_study_sage_app.presentation.common.component.studySessionList
 import com.example.studysage.feature_study_sage_app.presentation.common.component.taskList
@@ -119,82 +120,6 @@ private fun DashBoardScreen(
     onTaskCardClick: (Int?) -> Unit,
     onStartStudySessionButtonClick: () -> Unit
 ) {
-    //Fake Data
-//    val subjectFakeList =
-//        listOf(
-//            Subject(
-//                id = 0,
-//                name = "English",
-//                goalHours = 10f,
-//                color = Subject.subjectCardColors[0]
-//            ),
-//            Subject(
-//                id = 0,
-//                name = "Math",
-//                goalHours = 10f,
-//                color = Subject.subjectCardColors[1]
-//            ),
-//            Subject(
-//                id = 0,
-//                name = "Arabic",
-//                goalHours = 10f,
-//                color = Subject.subjectCardColors[2]
-//            ),
-//            Subject(
-//                id = 0,
-//                name = "Science",
-//                goalHours = 10f,
-//                color = Subject.subjectCardColors[3]
-//            ),
-//            Subject(
-//                id = 0,
-//                name = "History",
-//                goalHours = 10f,
-//                color = Subject.subjectCardColors[4]
-//            )
-//        )
-
-    val taskFakeList =
-        listOf(
-            Task(
-                id = 1,
-                taskSubjectId = 0,
-                title = "Prepare first 5 pages",
-                description = "",
-                date = 0L,
-                priority = 0,
-                relatedTaskToSubject = "",
-                isTaskComplete = false
-            ),
-            Task(
-                id = 1,
-                taskSubjectId = 0,
-                title = "Prepare second 5 pages",
-                description = "",
-                date = 0L,
-                priority = 1,
-                relatedTaskToSubject = "",
-                isTaskComplete = true
-            )
-        )
-
-    val sessionFakeLists =
-        listOf(
-            Session(
-                id = 0,
-                studySessionToSubject = 0,
-                relatedStudySessionToSubject = "English",
-                date = 2,
-                duration = 0L
-            ),
-            Session(
-                id = 0,
-                studySessionToSubject = 0,
-                relatedStudySessionToSubject = "Math",
-                date = 2,
-                duration = 0L
-            )
-        )
 
     var isAddSubjectDialogOpen by rememberSaveable { mutableStateOf(false) }
 
@@ -202,7 +127,7 @@ private fun DashBoardScreen(
 
     val snackBarState = remember { SnackbarHostState() }
 
-    EditSubjectDialog(
+    AddAndEditSubjectDialog(
         isOpen = isAddSubjectDialogOpen,
         selectedColor = state.subjectCardColorList,
         subjectName = state.subjectName ?: "",
@@ -308,13 +233,18 @@ private fun DashBoardScreen(
                     },
                     colors = ButtonDefaults.filledTonalButtonColors(
                         containerColor = md_theme_dark_onPrimaryContainer,
-                        contentColor = Color.Black
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 48.dp, vertical = 20.dp)
                 ) {
-                    Text(text = stringResource(id = R.string.start_study_session))
+                    Text(
+                        text = stringResource(id = R.string.start_study_session),
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    )
                 }
             }
             taskList(
@@ -376,7 +306,10 @@ fun SubjectCardSection(
     ) {
         Text(
             text = stringResource(R.string.subject),
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodySmall.copy(
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold
+            ),
             modifier = Modifier.padding(start = 12.dp)
         )
         IconButton(onClick = onClickAddSubjectButton) {
@@ -393,7 +326,7 @@ fun SubjectCardSection(
                     .size(120.dp)
                     .align(Alignment.CenterHorizontally)
                     .clip(CircleShape),
-                painter = painterResource(id = R.drawable.empty_data),
+                painter = painterResource(id = R.drawable.translation),
                 contentDescription = emptyText,
                 contentScale = ContentScale.FillBounds
             )

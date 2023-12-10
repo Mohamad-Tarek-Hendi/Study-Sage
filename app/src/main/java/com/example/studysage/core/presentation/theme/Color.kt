@@ -109,3 +109,13 @@ val LightGreen3 = Color(0xff11d79b)
 val BlueViolet1 = Color(0xffaeb4fd)
 val BlueViolet2 = Color(0xff9fa5fe)
 val BlueViolet3 = Color(0xff8f98fd)
+val purples = Color(0xFFC900FF)
+
+
+val text_colors = listOf(
+    Color(0xFFC900FF),
+    Color(0xFF8900AE),
+    Color(0xFF5D0076),
+    Color(0xFF330040),
+    Color(0xFF000000)
+)
