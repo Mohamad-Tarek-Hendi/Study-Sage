@@ -43,7 +43,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
+        kotlinCompilerExtensionVersion = "1.5.6"
     }
     packaging {
         resources {
@@ -132,4 +132,11 @@ dependencies {
 
     // Location Services
     implementation("com.google.android.gms:play-services-location:21.0.1")
+
+    implementation("androidx.compose.material:material-icons-extended")
+
+    // If using indicators, also depend on
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.30.1")
+    implementation("com.google.accompanist:accompanist-pager:0.30.1")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
 }

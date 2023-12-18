@@ -4,16 +4,15 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.studysage.feature_study_sage_app.domain.model.Session
-import com.example.studysage.feature_study_sage_app.domain.repository.SessionRepository
-import com.example.studysage.feature_study_sage_app.domain.repository.SubjectRepository
+import com.example.studysage.feature_study_sage_app.domain.use_case.base.StudySageUseCases
 import com.example.studysage.feature_study_sage_app.presentation.common.util.SnackBarEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -21,27 +20,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SessionViewModel @Inject constructor(
-    private val sessionRepository: SessionRepository,
-    private val subjectRepository: SubjectRepository,
+    private val studySageUseCases: StudySageUseCases
 ) : ViewModel() {
+
     private val _state = MutableStateFlow(SessionState())
-    val state = combine(
-        _state,
-        subjectRepository.getAllSubjectList(),
-        sessionRepository.getSessionList()
-    ) { state, subjectList, sessionList ->
-        state.copy(
-            subjectList = subjectList,
-            sessionList = sessionList
-        )
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = SessionState()
-    )
+    val state: StateFlow<SessionState> = _state.asStateFlow()
 
     private val _snackBarEventFlow = MutableSharedFlow<SnackBarEvent>()
     val snackBarEventFlow = _snackBarEventFlow.asSharedFlow()
+
+    init {
+        launchCombinedState()
+    }
 
     fun onEvent(event: SessionEvent) {
         when (event) {
@@ -85,6 +75,35 @@ class SessionViewModel @Inject constructor(
         }
     }
 
+    private fun launchCombinedState() {
+        viewModelScope.launch {
+            try {
+                val subjectList = studySageUseCases.getAllSubjectUseCase()
+                val sessionList = studySageUseCases.getSessionListUseCase()
+                combine(
+                    _state,
+                    subjectList,
+                    sessionList
+                ) { state, subjectList, sessionList ->
+                    state.copy(
+                        subjectList = subjectList,
+                        sessionList = sessionList
+                    )
+                }.collect { new_state ->
+                    _state.value = new_state
+                }
+            } catch (e: Exception) {
+                _snackBarEventFlow.emit(
+                    SnackBarEvent.ShowSnackBar(
+                        message = "Failed to load data. ${e.message}",
+                        messageDuration = SnackbarDuration.Long
+                    )
+                )
+            }
+
+        }
+    }
+
     private fun saveNewSession(duration: Long) {
         viewModelScope.launch {
             if (duration < 36) {
@@ -96,7 +115,7 @@ class SessionViewModel @Inject constructor(
                 return@launch
             }
             try {
-                sessionRepository.insertSession(
+                studySageUseCases.saveSessionUseCase(
                     session = Session(
                         studySessionToSubject = state.value.subjectId ?: -1,
                         relatedStudySessionToSubject = state.value.relatedToSubject ?: "",
@@ -124,7 +143,7 @@ class SessionViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 state.value.session?.let {
-                    sessionRepository.deleteSession(session = it)
+                    studySageUseCases.deleteSessionUseCase(session = it)
                 }
                 _snackBarEventFlow.emit(
                     SnackBarEvent.ShowSnackBar(

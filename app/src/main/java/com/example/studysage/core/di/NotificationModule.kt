@@ -16,6 +16,7 @@ import dagger.hilt.android.scopes.ServiceScoped
 @Module
 @InstallIn(ServiceComponent::class)
 object NotificationModule {
+
     @ServiceScoped
     @Provides
     fun provideNotificationBuilder(

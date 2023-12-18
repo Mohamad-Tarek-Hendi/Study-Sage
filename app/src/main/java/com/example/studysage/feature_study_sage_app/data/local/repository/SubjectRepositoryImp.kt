@@ -16,6 +16,7 @@ class SubjectRepositoryImp @Inject constructor(
     private val taskDao: TaskDao,
     private val sessionDao: SessionDao
 ) : SubjectRepository {
+
     override suspend fun upsertSubject(subject: Subject) {
         subjectDao.upsertSubject(
             subject = subject.toSubjectEntity()
