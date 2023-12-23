@@ -10,7 +10,7 @@ import com.example.studysage.feature_study_sage_app.domain.use_case.subject_use_
 import com.example.studysage.feature_study_sage_app.domain.use_case.subject_use_case.GetAllSubjectUseCase
 import com.example.studysage.feature_study_sage_app.domain.use_case.subject_use_case.GetSubjectByIdUseCase
 import com.example.studysage.feature_study_sage_app.domain.use_case.subject_use_case.GetTotalGoalHourSubjectUseCase
-import com.example.studysage.feature_study_sage_app.domain.use_case.subject_use_case.GetTotalSubjectUseCase
+import com.example.studysage.feature_study_sage_app.domain.use_case.subject_use_case.GetTotalSubjectCountUseCase
 import com.example.studysage.feature_study_sage_app.domain.use_case.subject_use_case.UpsertSubjectUseCase
 import com.example.studysage.feature_study_sage_app.domain.use_case.task_use_case.DeleteTaskByIdUseCase
 import com.example.studysage.feature_study_sage_app.domain.use_case.task_use_case.GetRelatedCompletedTasksBySpecificSubjectUseCase
@@ -22,7 +22,7 @@ import com.example.studysage.feature_study_sage_app.domain.use_case.task_use_cas
 data class StudySageUseCases(
     val upsertSubjectUseCase: UpsertSubjectUseCase,
     val getAllSubjectUseCase: GetAllSubjectUseCase,
-    val getTotalSubjectUseCase: GetTotalSubjectUseCase,
+    val getTotalSubjectCountUseCase: GetTotalSubjectCountUseCase,
     val getTotalGoalHourSubjectUseCase: GetTotalGoalHourSubjectUseCase,
     val getSubjectByIdUseCase: GetSubjectByIdUseCase,
     val deleteSubjectByIdUseCase: DeleteSubjectByIdUseCase,

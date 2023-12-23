@@ -95,7 +95,7 @@ class DashboardViewModel @Inject constructor(
     private fun launchCombinedState() {
         viewModelScope.launch {
             try {
-                val totalSubjectCount = studySageUseCases.getTotalSubjectUseCase()
+                val totalSubjectCount = studySageUseCases.getTotalSubjectCountUseCase()
                 val totalGoalHour = studySageUseCases.getTotalGoalHourSubjectUseCase()
                 val subjectList = studySageUseCases.getAllSubjectUseCase()
                 val totalSessionDuration = studySageUseCases.getTotalSessionDurationUseCase()

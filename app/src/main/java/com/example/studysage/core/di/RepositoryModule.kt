@@ -16,6 +16,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
 
+    //Useful when you have an interface and multiple implementations
     @Singleton
     @Binds
     abstract fun bindSubjectRepository(

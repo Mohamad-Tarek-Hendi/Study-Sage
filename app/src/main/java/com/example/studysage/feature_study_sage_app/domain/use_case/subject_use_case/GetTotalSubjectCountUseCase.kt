@@ -6,7 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
-class GetTotalSubjectUseCase(
+class GetTotalSubjectCountUseCase(
     private val subjectRepository: SubjectRepository,
     //we recommend injecting Dispatchers For easier testing
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
