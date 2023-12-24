@@ -37,8 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.studysage.R
-import com.example.studysage.feature_study_sage_app.domain.model.Session
-import com.example.studysage.feature_study_sage_app.domain.model.Task
 import com.example.studysage.feature_study_sage_app.presentation.common.component.AddAndEditSubjectDialog
 import com.example.studysage.feature_study_sage_app.presentation.common.component.DeleteDialog
 import com.example.studysage.feature_study_sage_app.presentation.common.component.PerformanceCard
@@ -105,79 +103,6 @@ private fun SubjectScreen(
     onAddTaskFloatingButtonClick: () -> Unit,
     onTaskCardClick: (Int?) -> Unit
 ) {
-    //Fake Data
-    val taskList =
-        listOf(
-            Task(
-                id = 1,
-                taskSubjectId = 0,
-                title = "Prepare first 5 pages",
-                description = "",
-                date = 0L,
-                priority = 0,
-                relatedTaskToSubject = "",
-                isTaskComplete = false
-            ),
-            Task(
-                id = 1,
-                taskSubjectId = 0,
-                title = "Prepare second 5 pages",
-                description = "",
-                date = 0L,
-                priority = 1,
-                relatedTaskToSubject = "",
-                isTaskComplete = true
-            ),
-            Task(
-                id = 1,
-                taskSubjectId = 0,
-                title = "Prepare second 5 pages",
-                description = "",
-                date = 0L,
-                priority = 1,
-                relatedTaskToSubject = "",
-                isTaskComplete = true
-            ),
-            Task(
-                id = 1,
-                taskSubjectId = 0,
-                title = "Prepare second 5 pages",
-                description = "",
-                date = 0L,
-                priority = 1,
-                relatedTaskToSubject = "",
-                isTaskComplete = true
-            ),
-            Task(
-                id = 1,
-                taskSubjectId = 0,
-                title = "Prepare second 5 pages",
-                description = "",
-                date = 0L,
-                priority = 1,
-                relatedTaskToSubject = "",
-                isTaskComplete = true
-            )
-        )
-
-    val sessionLists =
-        listOf(
-            Session(
-                id = 0,
-                studySessionToSubject = 0,
-                relatedStudySessionToSubject = "English",
-                date = 2,
-                duration = 0L
-            ),
-            Session(
-                id = 0,
-                studySessionToSubject = 0,
-                relatedStudySessionToSubject = "Math",
-                date = 2,
-                duration = 0L
-            )
-        )
-
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     val lazyColumnState = rememberLazyListState()

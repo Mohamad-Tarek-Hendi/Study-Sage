@@ -39,7 +39,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.studysage.R
 import com.example.studysage.core.presentation.theme.Red
-import com.example.studysage.feature_study_sage_app.domain.model.Session
 import com.example.studysage.feature_study_sage_app.presentation.common.component.DeleteDialog
 import com.example.studysage.feature_study_sage_app.presentation.common.component.SubjectDropBottomSheet
 import com.example.studysage.feature_study_sage_app.presentation.common.component.studySessionList
@@ -100,28 +99,7 @@ private fun SessionScreen(
     onBackButtonClick: () -> Unit,
     timerService: StudySessionTimerService
 ) {
-
     val context = LocalContext.current
-
-    //Fake data
-    val sessionLists =
-        listOf(
-            Session(
-                id = 0,
-                studySessionToSubject = 0,
-                relatedStudySessionToSubject = "English",
-                date = 2,
-                duration = 0L
-            ),
-            Session(
-                id = 0,
-                studySessionToSubject = 0,
-                relatedStudySessionToSubject = "Math",
-                date = 2,
-                duration = 0L
-            )
-        )
-
     val hours by timerService.hours
     val minutes by timerService.minutes
     val seconds by timerService.seconds
