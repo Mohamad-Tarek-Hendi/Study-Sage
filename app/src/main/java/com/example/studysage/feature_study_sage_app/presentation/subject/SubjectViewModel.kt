@@ -18,6 +18,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -119,9 +121,9 @@ class SubjectViewModel @Inject constructor(
                         recentSessionList = relatedSessionList,
                         studyHour = totalSessionDuration.toHours(),
                     )
-                }.collect { new_state ->
+                }.onEach { new_state ->
                     _state.value = new_state
-                }
+                }.launchIn(this)
 
             } catch (e: Exception) {
                 _snackBarEventFlow.emit(

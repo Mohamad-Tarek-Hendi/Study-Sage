@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -114,9 +116,9 @@ class DashboardViewModel @Inject constructor(
                         subjectList = subjectList,
                         totalStudiedHour = totalSessionDuration.toHours()
                     )
-                }.collect { news_state ->
+                }.onEach { news_state ->
                     _state.value = news_state
-                }
+                }.launchIn(this)
             } catch (e: Exception) {
                 _snackBarEventFlow.emit(
                     SnackBarEvent.ShowSnackBar(
@@ -132,9 +134,9 @@ class DashboardViewModel @Inject constructor(
     private fun getTaskList() {
         viewModelScope.launch {
             try {
-                studySageUseCases.getTaskListUseCase().collect { tasks ->
+                studySageUseCases.getTaskListUseCase().onEach { tasks ->
                     _tasksList.value = tasks
-                }
+                }.launchIn(this)
             } catch (e: Exception) {
                 _snackBarEventFlow.emit(
                     SnackBarEvent.ShowSnackBar(
@@ -149,9 +151,9 @@ class DashboardViewModel @Inject constructor(
     private fun getSessionList() {
         viewModelScope.launch {
             try {
-                studySageUseCases.getSessionListUseCase().collect { session ->
+                studySageUseCases.getSessionListUseCase().onEach { session ->
                     _sessionList.value = session
-                }
+                }.launchIn(this)
             } catch (e: Exception) {
                 _snackBarEventFlow.emit(
                     SnackBarEvent.ShowSnackBar(

@@ -17,6 +17,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -102,7 +104,6 @@ class TaskViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val subjectList = studySageUseCases.getAllSubjectUseCase()
-
                 combine(
                     _state,
                     subjectList
@@ -112,9 +113,9 @@ class TaskViewModel @Inject constructor(
                         subjectList = subjectList
                     )
 
-                }.collect { news_state ->
+                }.onEach { news_state ->
                     _state.value = news_state
-                }
+                }.launchIn(this)
             } catch (e: Exception) {
                 _snackBarEventFlow.emit(
                     SnackBarEvent.ShowSnackBar(
@@ -163,7 +164,6 @@ class TaskViewModel @Inject constructor(
             subjectId?.let { id ->
                 try {
                     studySageUseCases.getSubjectByIdUseCase(subjectId = id)?.let { subject ->
-
                         _state.update {
                             it.copy(
                                 subjectId = subject.id,

@@ -11,7 +11,6 @@ class GetTotalSubjectCountUseCase(
     //we recommend injecting Dispatchers For easier testing
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
-
     suspend operator fun invoke(): Flow<Int> {
         return withContext(ioDispatcher) {
             subjectRepository.getTotalSubjectCount()
